@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>J3 Sistemas | Desenvolvimento de Sistemas Personalizados Sob Medida</title>
+    <meta name="description"
+        content="Desenvolvemos sistemas web personalizados, dashboards e soluções tecnológicas exclusivas para o seu negócio. Transforme sua operação com tecnologia de ponta.">
+    <!-- Favicon / Logo da Aba -->
+    <link rel="icon" type="image/png" href="assets/logo.png">
+
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        /* Small adjustment for the new hero image */
+        .hero-image-new img {
+            width: 100%;
+            height: auto;
+            border-radius: 20px;
+            box-shadow: var(--shadow-lg);
+            animation: float 6s ease-in-out infinite;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Navbar -->
+    <header class="navbar" id="navbar">
+        <div class="container nav-container">
+            <a href="index.html" class="logo">
+                <img src="assets/logo.png" alt="Logo Principal J3 Sistemas" id="main-logo">
+                <span>J3 Sistemas</span>
+            </a>
+            <nav class="nav-links" id="nav-links">
+                <a href="#solucoes">Soluções</a>
+                <a href="#beneficios">Benefícios</a>
+                <a href="portfolio.html">Portfólio</a>
+                <a href="planilhas.html">Sistematizar Planilhas</a>
+                <a href="#contato">Contato</a>
+            </nav>
+            <a href="https://wa.me/5511981834938?text=Ol%C3%A1%20quero%20um%20sistema%20personalizado"
+                target="_blank" class="btn btn-primary d-none-mobile">
+                <i data-lucide="message-circle"></i> Fale Conosco
+            </a>
+            <button class="menu-toggle" id="menu-toggle" aria-label="Abrir menu mobile">
+                <i data-lucide="menu"></i>
+            </button>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero glass-panel">
+        <div class="hero-bg"></div>
+        <div class="hero-content container">
+            <div class="hero-text">
+                <div class="badge animate-up">TECNOLOGIA EXCLUSIVA</div>
+                <h1 class="animate-up delay-1">Sistemas <span class="highlight">Personalizados</span> que Impulsionam seu Negócio</h1>
+                <p class="animate-up delay-2">Não force sua empresa a se adaptar a um software pronto. Nós criamos a ferramenta perfeita, desenhada exatamente para a sua forma de trabalhar.</p>
+                <div class="hero-actions animate-up delay-3">
+                    <a href="https://wa.me/5511981834938?text=Ol%C3%A1%20quero%20um%20sistema%20personalizado"
+                        target="_blank" class="btn btn-primary btn-large glow-effect">
+                        <i data-lucide="zap"></i> Começar meu Projeto
+                    </a>
+                    <a href="#solucoes" class="btn btn-secondary btn-large">
+                        Conheça nossas Soluções <i data-lucide="arrow-down"></i>
+                    </a>
+                </div>
+            </div>
+            <div class="hero-image-new animate-up delay-4" style="flex: 1; display: flex; justify-content: center;">
+                <img src="assets/hero_custom_systems.png" alt="Desenvolvimento de Sistemas Personalizados J3">
+            </div>
+        </div>
+    </section>
+
+    <!-- Benefits Section -->
+    <section id="beneficios" class="features section">
+        <div class="container text-center">
+            <h2 class="section-title">Por que escolher um sistema sob medida?</h2>
+            <p class="section-subtitle">Diferente de softwares de prateleira, nossas soluções são construídas para resolver as dores reais do seu dia a dia.</p>
+
+            <div class="grid features-grid mt-4">
+                <div class="feature-card reveal">
+                    <div class="icon-wrapper"><i data-lucide="target"></i></div>
+                    <h3>100% Adaptado</h3>
+                    <p>O sistema segue o seu fluxo de trabalho, não o contrário. Cada campo, cada botão e cada relatório é pensado para a sua necessidade.</p>
+                </div>
+                <div class="feature-card reveal delay-1">
+                    <div class="icon-wrapper"><i data-lucide="trending-up"></i></div>
+                    <h3>Escalabilidade Real</h3>
+                    <p>Sua empresa cresceu? O sistema cresce junto. Adicione novos módulos, usuários e funcionalidades sem limitações de licenças caras.</p>
+                </div>
+                <div class="feature-card reveal delay-2">
+                    <div class="icon-wrapper"><i data-lucide="shield-check"></i></div>
+                    <h3>Segurança Total</h3>
+                    <p>Dados protegidos de ponta a ponta. Você tem controle total sobre quem acessa o quê, com logs de atividades e backups automáticos.</p>
+                </div>
+                <div class="feature-card reveal">
+                    <div class="icon-wrapper"><i data-lucide="cpu"></i></div>
+                    <h3>Integração Inteligente</h3>
+                    <p>Conectamos seu novo sistema com as ferramentas que você já usa, centralizando toda a sua operação em um único painel.</p>
+                </div>
+                <div class="feature-card reveal delay-1">
+                    <div class="icon-wrapper"><i data-lucide="bar-chart-3"></i></div>
+                    <h3>Visão Estratégica</h3>
+                    <p>Dashboards dinâmicos que transformam dados em decisões. Saiba exatamente o que está acontecendo no seu negócio em tempo real.</p>
+                </div>
+                <div class="feature-card reveal delay-2">
+                    <div class="icon-wrapper"><i data-lucide="users"></i></div>
+                    <h3>Suporte Próximo</h3>
+                    <p>Você não é apenas mais um ticket. Temos uma equipe de especialistas pronta para apoiar a evolução contínua da sua ferramenta.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Solutions Section -->
+    <section id="solucoes" class="services section bg-light">
+        <div class="container text-center">
+            <h2 class="section-title">Nossas Especialidades</h2>
+            <p class="section-subtitle">Dominamos as tecnologias mais modernas para entregar resultados robustos e interfaces intuitivas.</p>
+
+            <div class="grid services-grid mt-4">
+                <div class="service-card reveal">
+                    <div class="service-icon"><i data-lucide="layout"></i></div>
+                    <h3>Plataformas de Gestão (ERP/CRM)</h3>
+                    <p>Sistemas robustos para gerir financeiro, estoque, vendas e relacionamento com clientes em um só lugar.</p>
+                </div>
+                <div class="service-card reveal delay-1">
+                    <div class="service-icon"><i data-lucide="smartphone"></i></div>
+                    <h3>Aplicações Web Progressivas</h3>
+                    <p>Sistemas que funcionam perfeitamente em computadores, tablets e celulares, com experiência de aplicativo nativo.</p>
+                </div>
+                <div class="service-card reveal delay-2">
+                    <div class="service-icon"><i data-lucide="database"></i></div>
+                    <h3>Sistematização de Processos</h3>
+                    <p>Transformamos fluxos manuais e confusos em processos digitais ágeis, reduzindo erros e aumentando a margem de lucro.</p>
+                </div>
+            </div>
+            
+            <div class="mt-4">
+                <a href="planilhas.html" class="btn btn-secondary">
+                    Vindo de Planilhas? Veja como as transformamos em sistemas <i data-lucide="file-spreadsheet"></i>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA BANNER -->
+    <section class="cta-banner section relative">
+        <div class="container tech-banner text-center reveal">
+            <h2>Vamos transformar sua ideia em realidade?</h2>
+            <p>Agende uma conversa técnica sem compromisso e descubra como a tecnologia sob medida pode revolucionar seu negócio.</p>
+            <a href="https://wa.me/5511981834938?text=Ol%C3%A1%20quero%20um%20sistema%20personalizado" target="_blank" class="btn btn-primary btn-large mt-2">
+                <i data-lucide="calendar"></i> Agendar Diagnóstico Gratuito
+            </a>
+        </div>
+    </section>
+
+    <!-- WhatsApp Floating Button -->
+    <a href="https://wa.me/5511981834938?text=Ol%C3%A1%20quero%20um%20sistema%20personalizado" target="_blank" class="floating-whatsapp"
+        aria-label="Fale conosco no WhatsApp">
+        <i data-lucide="message-circle" class="wa-icon"></i>
+    </a>
+
+    <!-- Footer -->
+    <footer class="footer" id="contato">
+        <div class="container">
+            <div class="footer-content grid-footer">
+                <div class="footer-info">
+                    <h3 class="footer-title">J3 Sistemas</h3>
+                    <p class="footer-desc">Expertise em transformar desafios complexos em soluções tecnológicas escaláveis. Focamos em performance, segurança e usabilidade para o seu crescimento.<br><br><b>Sua visão, nosso código. A combinação perfeita para o sucesso digital.</b></p>
+                    <div class="social-links mt-2">
+                        <a href="https://wa.me/5511981834938?text=Ol%C3%A1%20quero%20um%20sistema%20personalizado" target="_blank" aria-label="WhatsApp"><i
+                                data-lucide="message-circle"></i></a>
+                        <a href="https://www.facebook.com/j3infoti/" target="_blank" aria-label="Facebook"><i
+                                data-lucide="facebook"></i></a>
+                        <a href="https://www.instagram.com/j3infoti/" target="_blank" aria-label="Instagram"><i
+                                data-lucide="instagram"></i></a>
+                    </div>
+                </div>
+
+                <div class="footer-links">
+                    <h4 class="footer-title">Navegação</h4>
+                    <ul>
+                        <li><a href="#solucoes"><i data-lucide="chevron-right"></i> Soluções</a></li>
+                        <li><a href="portfolio.html"><i data-lucide="chevron-right"></i> Portfólio</a></li>
+                        <li><a href="planilhas.html"><i data-lucide="chevron-right"></i> Sistematizar Planilhas</a></li>
+                        <li><a href="#contato"><i data-lucide="chevron-right"></i> Fale Conosco</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-contact">
+                    <h4 class="footer-title">Fale Conosco</h4>
+                    <p class="footer-desc">Pronto para dar o próximo passo na digitalização da sua empresa?</p>
+                    <div style="display: flex; flex-direction: column; gap: 0.5rem;" class="mt-2">
+                        <a href="https://wa.me/5511981834938?text=Ol%C3%A1%20quero%20um%20sistema%20personalizado" target="_blank" class="contact-link">
+                            <i data-lucide="phone"></i> (11) 98183-4938
+                        </a>
+                        <a href="mailto:contato@j3infoti.com.br" class="contact-link">
+                            <i data-lucide="mail"></i> contato@j3infoti.com.br
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="footer-bottom">
+                &copy; <span id="year"></span> J3 Sistemas. Tecnologia Sob Medida para o Seu Futuro.
+            </div>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+
+</html>
