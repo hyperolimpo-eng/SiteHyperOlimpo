@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portfólio | J3 Sistemas - Conheça nossos Projetos de Sucesso</title>
+    <meta name="description"
+        content="Conheça os projetos desenvolvidos pela J3 Sistemas: J3 Smart Notify, Sistema de Ponto e outras soluções personalizadas.">
+    <!-- Favicon / Logo da Aba -->
+    <link rel="icon" type="image/png" href="assets/logo.png">
+
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        .portfolio-grid {
+            grid-template-columns: 1fr;
+            gap: 4rem;
+        }
+
+        .project-item {
+            display: flex;
+            align-items: center;
+            gap: 4rem;
+            background: var(--white);
+            border-radius: 24px;
+            overflow: hidden;
+            box-shadow: var(--shadow-lg);
+            padding: 3rem;
+            transition: var(--transition-smooth);
+        }
+
+        .project-item:nth-child(even) {
+            flex-direction: row-reverse;
+        }
+
+        .project-image {
+            flex: 1.2;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: var(--shadow-md);
+        }
+
+        .project-image img {
+            width: 100%;
+            height: auto;
+            display: block;
+            transition: transform 0.5s ease;
+        }
+
+        .project-item:hover .project-image img {
+            transform: scale(1.05);
+        }
+
+        .project-info {
+            flex: 0.8;
+        }
+
+        .project-title {
+            font-size: 2.25rem;
+            margin-bottom: 1rem;
+            color: var(--primary-blue);
+        }
+
+        .project-badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            background: var(--light-blue);
+            color: var(--secondary-blue);
+            border-radius: 50px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            text-transform: uppercase;
+        }
+
+        .project-description {
+            font-size: 1.1rem;
+            margin-bottom: 2rem;
+            color: var(--text-muted);
+        }
+
+        .project-features {
+            list-style: none;
+            margin-bottom: 2.5rem;
+        }
+
+        .project-features li {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 0.75rem;
+            font-weight: 500;
+            color: var(--text-main);
+        }
+
+        .project-features li .lucide {
+            color: var(--accent-blue);
+            width: 20px;
+            height: 20px;
+        }
+
+        @media (max-width: 992px) {
+            .project-item, .project-item:nth-child(even) {
+                flex-direction: column;
+                padding: 2rem;
+            }
+            .project-title {
+                font-size: 1.75rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Navbar -->
+    <header class="navbar" id="navbar">
+        <div class="container nav-container">
+            <a href="index.html" class="logo">
+                <img src="assets/logo.png" alt="Logo Principal J3 Sistemas" id="main-logo">
+                <span>J3 Sistemas</span>
+            </a>
+            <nav class="nav-links" id="nav-links">
+                <a href="index.html">Início</a>
+                <a href="portfolio.html" class="active">Portfólio</a>
+                <a href="planilhas.html">Planilhas</a>
+                <a href="#contato">Contato</a>
+            </nav>
+            <a href="https://wa.me/5511981834938?text=Ol%C3%A1%20quero%20um%20sistema%20personalizado"
+                target="_blank" class="btn btn-primary d-none-mobile">
+                <i data-lucide="message-circle"></i> Fale Conosco
+            </a>
+            <button class="menu-toggle" id="menu-toggle" aria-label="Abrir menu mobile">
+                <i data-lucide="menu"></i>
+            </button>
+        </div>
+    </header>
+
+    <!-- Header Section -->
+    <section class="hero section bg-light" style="padding-top: 10rem; padding-bottom: 2rem;">
+        <div class="container text-center">
+            <div class="badge animate-up">NOSSO PORTFÓLIO</div>
+            <h1 class="section-title animate-up delay-1">Ideias que se tornaram <span class="highlight">Sistemas</span></h1>
+            <p class="section-subtitle animate-up delay-2" style="margin-bottom: 1rem;">Transformamos necessidades operacionais em soluções tecnológicas robustas e escaláveis.</p>
+        </div>
+    </section>
+
+    <!-- Projects Section -->
+    <section id="portfolio" class="section" style="padding-top: 2rem;">
+        <div class="container">
+            <div class="grid portfolio-grid">
+                
+                <!-- Project 1: J3 Smart Notify -->
+                <article class="project-item reveal">
+                    <div class="project-image">
+                        <img src="assets/j3_notify.png" alt="J3 Smart Notify - Gestão de Portaria">
+                    </div>
+                    <div class="project-info">
+                        <div class="project-badge">Logística Residencial</div>
+                        <h2 class="project-title">J3 Smart Notify</h2>
+                        <p class="project-description">Uma solução completa para gestão de encomendas em condomínios de alto padrão, eliminando gargalos na portaria e aumentando a segurança dos moradores.</p>
+                        <ul class="project-features">
+                            <li><i data-lucide="check-circle"></i> Notificação automática via WhatsApp</li>
+                            <li><i data-lucide="check-circle"></i> Registro fotográfico de entrada e saída</li>
+                            <li><i data-lucide="check-circle"></i> Dashboard de itens pendentes em tempo real</li>
+                            <li><i data-lucide="check-circle"></i> Gestão de moradores e unidades simplificada</li>
+                        </ul>
+                        <a href="https://wa.me/5511981834938?text=Ol%C3%A1%20quero%20um%20sistema%20personalizado" target="_blank" class="btn btn-primary">
+                            Ver Detalhes do Projeto <i data-lucide="arrow-right"></i>
+                        </a>
+                    </div>
+                </article>
+
+                <!-- Project 2: Sistema de Ponto -->
+                <article class="project-item reveal">
+                    <div class="project-image">
+                        <img src="assets/diarias.png" alt="Sistema de Ponto - Gestão de Freelancers">
+                    </div>
+                    <div class="project-info">
+                        <div class="project-badge">Gestão de Operações</div>
+                        <h2 class="project-title">Sistema de Ponto</h2>
+                        <p class="project-description">Plataforma desenvolvida para gerenciar escalas de trabalhadores freelancers e eventos, automatizando o controle de check-in e pagamentos.</p>
+                        <ul class="project-features">
+                            <li><i data-lucide="check-circle"></i> Painel de administração de eventos e escalas</li>
+                            <li><i data-lucide="check-circle"></i> App para trabalhadores (Check-in/Out geolocalizado)</li>
+                            <li><i data-lucide="check-circle"></i> Cálculo automático de diárias e relatórios financeiros</li>
+                            <li><i data-lucide="check-circle"></i> Controle de acesso seguro por RLS</li>
+                        </ul>
+                        <a href="https://wa.me/5511981834938?text=Ol%C3%A1%20quero%20um%20sistema%20personalizado" target="_blank" class="btn btn-primary">
+                            Ver Detalhes do Projeto <i data-lucide="arrow-right"></i>
+                        </a>
+                    </div>
+                </article>
+
+            </div>
+
+            <!-- More projects notice -->
+            <div class="text-center mt-4 reveal">
+                <p style="font-style: italic; color: var(--text-muted);">
+                    <i data-lucide="code-2" style="vertical-align: middle; margin-right: 8px;"></i> 
+                    Novos sistemas inovadores estão em fase de desenvolvimento. Em breve teremos mais novidades aqui!
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA BANNER -->
+    <section class="cta-banner section relative">
+        <div class="container tech-banner text-center reveal">
+            <h2>Seu projeto pode ser o nosso próximo case de sucesso.</h2>
+            <p>Precisa de um sistema que resolva problemas reais da sua operação? Vamos conversar hoje mesmo.</p>
+            <a href="https://wa.me/5511981834938?text=Ol%C3%A1%20quero%20um%20sistema%20personalizado" target="_blank" class="btn btn-primary btn-large mt-2">
+                <i data-lucide="message-square"></i> Iniciar meu Projeto
+            </a>
+        </div>
+    </section>
+
+    <!-- WhatsApp Floating Button -->
+    <a href="https://wa.me/5511981834938?text=Ol%C3%A1%20quero%20um%20sistema%20personalizado" target="_blank" class="floating-whatsapp"
+        aria-label="Fale conosco no WhatsApp">
+        <i data-lucide="message-circle" class="wa-icon"></i>
+    </a>
+
+    <!-- Footer -->
+    <footer class="footer" id="contato">
+        <div class="container">
+            <div class="footer-content grid-footer">
+                <div class="footer-info">
+                    <h3 class="footer-title">J3 Sistemas</h3>
+                    <p class="footer-desc">Expertise em transformar desafios complexos em soluções tecnológicas escaláveis.<br><br><b>Sua visão, nosso código.</b></p>
+                    <div class="social-links mt-2">
+                        <a href="https://wa.me/5511981834938?text=Ol%C3%A1%20quero%20um%20sistema%20personalizado" target="_blank" aria-label="WhatsApp"><i
+                                data-lucide="message-circle"></i></a>
+                        <a href="https://www.facebook.com/j3infoti/" target="_blank" aria-label="Facebook"><i
+                                data-lucide="facebook"></i></a>
+                        <a href="https://www.instagram.com/j3infoti/" target="_blank" aria-label="Instagram"><i
+                                data-lucide="instagram"></i></a>
+                    </div>
+                </div>
+
+                <div class="footer-links">
+                    <h4 class="footer-title">Navegação</h4>
+                    <ul>
+                        <li><a href="index.html#solucoes"><i data-lucide="chevron-right"></i> Soluções</a></li>
+                        <li><a href="portfolio.html"><i data-lucide="chevron-right"></i> Portfólio</a></li>
+                        <li><a href="planilhas.html"><i data-lucide="chevron-right"></i> Sistematizar Planilhas</a></li>
+                        <li><a href="#contato"><i data-lucide="chevron-right"></i> Fale Conosco</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-contact">
+                    <h4 class="footer-title">Fale Conosco</h4>
+                    <div style="display: flex; flex-direction: column; gap: 0.5rem;" class="mt-2">
+                        <a href="https://wa.me/5511981834938?text=Ol%C3%A1%20quero%20um%20sistema%20personalizado" target="_blank" class="contact-link">
+                            <i data-lucide="phone"></i> (11) 98183-4938
+                        </a>
+                        <a href="mailto:contato@j3infoti.com.br" class="contact-link">
+                            <i data-lucide="mail"></i> contato@j3infoti.com.br
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="footer-bottom">
+                &copy; <span id="year"></span> J3 Sistemas. Tecnologia Sob Medida.
+            </div>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+
+</html>
