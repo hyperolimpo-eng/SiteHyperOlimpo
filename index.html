@@ -1,0 +1,836 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>HyperOlimpo — Tecnologia que Eleva</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    /* ── Reset & Base ── */
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    :root {
+      --navy:       #0A1628;
+      --navy-mid:   #0D1E38;
+      --navy-light: #122340;
+      --accent:     #3ABEFF;
+      --accent-glow:#1A9FDF;
+      --white:      #FFFFFF;
+      --off-white:  #CBD8E8;
+      --muted:      #7A9BB5;
+      --card-bg:    rgba(13, 30, 56, 0.7);
+      --border:     rgba(58, 190, 255, 0.18);
+      --radius:     14px;
+    }
+    html { scroll-behavior: smooth; }
+    body {
+      background: var(--navy);
+      color: var(--off-white);
+      font-family: 'Inter', sans-serif;
+      overflow-x: hidden;
+    }
+    ::selection { background: var(--accent); color: var(--navy); }
+
+    /* ── Scrollbar ── */
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: var(--navy); }
+    ::-webkit-scrollbar-thumb { background: var(--accent-glow); border-radius: 3px; }
+
+    /* ── Typography ── */
+    h1, h2, h3 { font-family: 'Space Grotesk', sans-serif; color: var(--white); }
+    h1 { font-size: clamp(2.4rem, 5vw, 4.2rem); font-weight: 700; line-height: 1.1; }
+    h2 { font-size: clamp(1.8rem, 3.5vw, 2.8rem); font-weight: 700; }
+    h3 { font-size: 1.2rem; font-weight: 600; }
+    p  { line-height: 1.75; color: var(--off-white); }
+
+    /* ── Navbar ── */
+    #navbar {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+      padding: 1.2rem 6vw;
+      display: flex; align-items: center; justify-content: space-between;
+      transition: background 0.4s, backdrop-filter 0.4s, box-shadow 0.4s;
+    }
+    #navbar.scrolled {
+      background: rgba(10, 22, 40, 0.92);
+      backdrop-filter: blur(18px);
+      box-shadow: 0 2px 32px rgba(0,0,0,0.4);
+    }
+    .nav-logo { display: flex; align-items: center; gap: 0.7rem; text-decoration: none; }
+    .nav-logo img { height: 40px; width: 40px; border-radius: 50%; }
+    .nav-logo span { font-family: 'Space Grotesk', sans-serif; font-weight: 700; font-size: 1.1rem; color: var(--white); letter-spacing: 0.02em; }
+    nav { display: flex; gap: 2rem; list-style: none; }
+    nav a { color: var(--off-white); text-decoration: none; font-size: 0.9rem; font-weight: 500; letter-spacing: 0.04em; transition: color 0.25s; position: relative; padding-bottom: 2px; }
+    nav a::after { content: ''; position: absolute; bottom: 0; left: 0; width: 0; height: 1.5px; background: var(--accent); transition: width 0.3s; }
+    nav a:hover { color: var(--accent); }
+    nav a:hover::after { width: 100%; }
+    .nav-cta {
+      background: var(--accent); color: var(--navy);
+      padding: 0.55rem 1.4rem; border-radius: 8px;
+      font-weight: 700; font-size: 0.88rem; text-decoration: none;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .nav-cta:hover { transform: translateY(-2px); box-shadow: 0 6px 24px rgba(58,190,255,0.35); }
+
+    /* ── Hero ── */
+    #hero {
+      min-height: 100vh;
+      display: flex; align-items: center; justify-content: center;
+      text-align: center;
+      padding: 10rem 6vw 6rem;
+      position: relative; overflow: hidden;
+    }
+    .hero-bg {
+      position: absolute; inset: 0; z-index: 0;
+      background: radial-gradient(ellipse 80% 70% at 50% 0%, rgba(58,190,255,0.12) 0%, transparent 70%),
+                  radial-gradient(ellipse 50% 50% at 80% 80%, rgba(18,70,120,0.25) 0%, transparent 60%);
+    }
+    /* Particles canvas */
+    #particles { position: absolute; inset: 0; z-index: 1; }
+
+    /* Grid lines decorative */
+    .hero-grid {
+      position: absolute; inset: 0; z-index: 1;
+      background-image:
+        linear-gradient(rgba(58,190,255,0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(58,190,255,0.04) 1px, transparent 1px);
+      background-size: 60px 60px;
+    }
+    .hero-content { position: relative; z-index: 2; max-width: 780px; }
+    .hero-eyebrow {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      background: rgba(58,190,255,0.12); border: 1px solid var(--border);
+      border-radius: 30px; padding: 0.4rem 1rem;
+      font-size: 0.78rem; font-weight: 600; letter-spacing: 0.12em;
+      color: var(--accent); text-transform: uppercase; margin-bottom: 1.8rem;
+      animation: fadeSlideDown 0.8s ease both;
+    }
+    .hero-eyebrow .dot { width: 6px; height: 6px; background: var(--accent); border-radius: 50%; animation: pulse-dot 1.8s infinite; }
+    @keyframes pulse-dot { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.4;transform:scale(0.7)} }
+    h1 .line { display: block; overflow: hidden; }
+    h1 .line span { display: block; animation: revealUp 0.9s cubic-bezier(.16,1,.3,1) both; }
+    h1 .line:nth-child(2) span { animation-delay: 0.15s; }
+    h1 .line:nth-child(3) span { animation-delay: 0.28s; }
+    h1 .accent { color: var(--accent); }
+    .hero-sub {
+      margin-top: 1.4rem; font-size: 1.05rem; color: var(--muted); max-width: 580px; margin-inline: auto;
+      animation: fadeIn 1s 0.5s both;
+    }
+    .hero-actions {
+      margin-top: 2.4rem; display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;
+      animation: fadeIn 1s 0.7s both;
+    }
+    .btn-primary {
+      background: var(--accent); color: var(--navy);
+      padding: 0.85rem 2rem; border-radius: 10px; font-weight: 700; font-size: 0.95rem;
+      text-decoration: none; transition: transform 0.2s, box-shadow 0.2s;
+      display: inline-flex; align-items: center; gap: 0.5rem;
+    }
+    .btn-primary:hover { transform: translateY(-3px); box-shadow: 0 10px 32px rgba(58,190,255,0.4); }
+    .btn-secondary {
+      border: 1.5px solid var(--border); color: var(--off-white);
+      padding: 0.85rem 2rem; border-radius: 10px; font-weight: 600; font-size: 0.95rem;
+      text-decoration: none; transition: border-color 0.25s, color 0.25s, background 0.25s;
+    }
+    .btn-secondary:hover { border-color: var(--accent); color: var(--accent); background: rgba(58,190,255,0.06); }
+    .hero-scroll {
+      position: absolute; bottom: 2.5rem; left: 50%; transform: translateX(-50%);
+      display: flex; flex-direction: column; align-items: center; gap: 0.5rem;
+      z-index: 2; animation: fadeIn 1s 1.2s both;
+    }
+    .hero-scroll span { font-size: 0.7rem; letter-spacing: 0.14em; color: var(--muted); text-transform: uppercase; }
+    .scroll-mouse {
+      width: 22px; height: 36px; border: 2px solid var(--muted); border-radius: 12px;
+      display: flex; justify-content: center; padding-top: 6px;
+    }
+    .scroll-mouse::before {
+      content: ''; width: 3px; height: 8px; background: var(--accent); border-radius: 2px;
+      animation: scrollWheel 1.8s infinite;
+    }
+    @keyframes scrollWheel { 0%{opacity:1;transform:translateY(0)} 100%{opacity:0;transform:translateY(10px)} }
+
+    /* ── Stats Bar ── */
+    #stats {
+      padding: 3.5rem 6vw;
+      background: var(--navy-mid);
+      border-top: 1px solid rgba(58,190,255,0.08);
+      border-bottom: 1px solid rgba(58,190,255,0.08);
+    }
+    .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 2rem; text-align: center; }
+    .stat-item .num { font-family: 'Space Grotesk', sans-serif; font-size: 2.4rem; font-weight: 800; color: var(--accent); display: block; }
+    .stat-item .label { font-size: 0.82rem; color: var(--muted); letter-spacing: 0.06em; text-transform: uppercase; margin-top: 0.3rem; }
+
+    /* ── Section Shared ── */
+    section { padding: 6rem 6vw; }
+    .section-tag {
+      display: inline-block; background: rgba(58,190,255,0.1); border: 1px solid var(--border);
+      border-radius: 20px; padding: 0.3rem 0.9rem;
+      font-size: 0.72rem; font-weight: 600; letter-spacing: 0.14em;
+      color: var(--accent); text-transform: uppercase; margin-bottom: 1rem;
+    }
+    .section-intro { max-width: 560px; }
+    .section-intro p { color: var(--muted); margin-top: 0.8rem; font-size: 1.0rem; }
+
+    /* ── Services ── */
+    #services { background: var(--navy-light); position: relative; overflow: hidden; }
+    #services::before {
+      content: ''; position: absolute; top: -120px; right: -120px;
+      width: 500px; height: 500px; border-radius: 50%;
+      background: radial-gradient(circle, rgba(58,190,255,0.06) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .services-header { display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: 1.5rem; margin-bottom: 3.5rem; }
+    .services-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1.5rem; }
+    .service-card {
+      background: var(--card-bg); border: 1px solid var(--border); border-radius: var(--radius);
+      padding: 2rem; position: relative; overflow: hidden;
+      transition: transform 0.35s cubic-bezier(.16,1,.3,1), box-shadow 0.35s, border-color 0.35s;
+      cursor: default;
+    }
+    .service-card::before {
+      content: ''; position: absolute; inset: 0; border-radius: var(--radius);
+      background: radial-gradient(ellipse 140% 100% at 50% 110%, rgba(58,190,255,0.1) 0%, transparent 60%);
+      opacity: 0; transition: opacity 0.4s;
+    }
+    .service-card:hover { transform: translateY(-8px); box-shadow: 0 20px 48px rgba(0,0,0,0.35), 0 0 0 1px rgba(58,190,255,0.25); border-color: rgba(58,190,255,0.35); }
+    .service-card:hover::before { opacity: 1; }
+    .service-icon {
+      width: 52px; height: 52px; border-radius: 12px;
+      background: rgba(58,190,255,0.12); border: 1px solid rgba(58,190,255,0.25);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.5rem; margin-bottom: 1.4rem;
+      transition: background 0.3s, transform 0.3s;
+    }
+    .service-card:hover .service-icon { background: rgba(58,190,255,0.22); transform: scale(1.1); }
+    .service-card h3 { margin-bottom: 0.6rem; font-size: 1.1rem; }
+    .service-card p { font-size: 0.9rem; color: var(--muted); line-height: 1.7; }
+    .card-arrow {
+      position: absolute; bottom: 1.5rem; right: 1.5rem;
+      color: var(--accent); font-size: 1.1rem; opacity: 0;
+      transform: translateX(-6px); transition: opacity 0.3s, transform 0.3s;
+    }
+    .service-card:hover .card-arrow { opacity: 1; transform: translateX(0); }
+
+    /* ── Process ── */
+    #process { background: var(--navy); }
+    .process-steps { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 0; margin-top: 3.5rem; position: relative; }
+    .process-steps::before {
+      content: ''; position: absolute; top: 32px; left: 10%; right: 10%; height: 1px;
+      background: linear-gradient(90deg, transparent, var(--border), var(--accent-glow), var(--border), transparent);
+    }
+    .process-step { text-align: center; padding: 0 1.5rem; position: relative; }
+    .step-num {
+      width: 64px; height: 64px; border-radius: 50%;
+      background: var(--navy-light); border: 2px solid var(--border);
+      display: flex; align-items: center; justify-content: center; margin: 0 auto 1.4rem;
+      font-family: 'Space Grotesk', sans-serif; font-size: 1.3rem; font-weight: 800; color: var(--accent);
+      transition: background 0.35s, border-color 0.35s, box-shadow 0.35s;
+      position: relative; z-index: 1;
+    }
+    .process-step:hover .step-num {
+      background: rgba(58,190,255,0.15); border-color: var(--accent);
+      box-shadow: 0 0 28px rgba(58,190,255,0.3);
+    }
+    .process-step h3 { font-size: 1rem; margin-bottom: 0.5rem; }
+    .process-step p { font-size: 0.85rem; color: var(--muted); }
+
+    /* ── About ── */
+    #about { background: var(--navy-light); }
+    .about-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 5rem; align-items: center; }
+    .about-visual {
+      position: relative; display: flex; justify-content: center; align-items: center;
+    }
+    .about-logo-wrap {
+      width: 220px; height: 220px; border-radius: 50%;
+      background: radial-gradient(circle, rgba(58,190,255,0.12) 0%, transparent 70%);
+      display: flex; align-items: center; justify-content: center;
+      position: relative;
+    }
+    .about-logo-wrap img { width: 160px; height: 160px; border-radius: 50%; }
+    .orbit {
+      position: absolute; border-radius: 50%; border: 1px solid var(--border);
+      animation: orbit-spin 8s linear infinite;
+    }
+    .orbit-1 { width: 260px; height: 260px; }
+    .orbit-2 { width: 340px; height: 340px; animation-duration: 14s; animation-direction: reverse; }
+    .orbit-dot {
+      position: absolute; width: 8px; height: 8px; border-radius: 50%;
+      background: var(--accent); box-shadow: 0 0 12px var(--accent);
+      top: -4px; left: 50%; transform: translateX(-50%);
+    }
+    @keyframes orbit-spin { from{transform:rotate(0deg)} to{transform:rotate(360deg)} }
+    .about-text .section-intro { max-width: 100%; }
+    .about-text p + p { margin-top: 1rem; }
+    .values-list { margin-top: 2rem; display: flex; flex-direction: column; gap: 0.8rem; }
+    .value-item {
+      display: flex; align-items: center; gap: 0.75rem;
+      padding: 0.8rem 1.1rem; border-radius: 10px;
+      background: rgba(58,190,255,0.05); border: 1px solid rgba(58,190,255,0.1);
+      font-size: 0.9rem; font-weight: 500;
+      transition: background 0.25s, border-color 0.25s;
+    }
+    .value-item:hover { background: rgba(58,190,255,0.1); border-color: rgba(58,190,255,0.25); }
+    .value-icon { font-size: 1rem; flex-shrink: 0; }
+
+    /* ── Why Choose ── */
+    #why { background: var(--navy); }
+    .why-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1.5rem; margin-top: 3.5rem; }
+    .why-card {
+      background: var(--card-bg); border: 1px solid var(--border); border-radius: var(--radius);
+      padding: 1.8rem; transition: transform 0.3s, border-color 0.3s;
+    }
+    .why-card:hover { transform: translateY(-5px); border-color: rgba(58,190,255,0.3); }
+    .why-num { font-family: 'Space Grotesk', sans-serif; font-size: 2.5rem; font-weight: 800; color: rgba(58,190,255,0.2); display: block; line-height: 1; margin-bottom: 0.8rem; }
+    .why-card h3 { font-size: 1rem; margin-bottom: 0.5rem; }
+    .why-card p { font-size: 0.88rem; color: var(--muted); }
+
+    /* ── Contact ── */
+    #contact { background: var(--navy-light); }
+    .contact-wrapper { display: grid; grid-template-columns: 1fr 1.2fr; gap: 4rem; align-items: start; }
+    .contact-info { }
+    .contact-info p { color: var(--muted); margin-top: 0.8rem; font-size: 0.95rem; }
+    .contact-channels { margin-top: 2rem; display: flex; flex-direction: column; gap: 0.9rem; }
+    .channel {
+      display: flex; align-items: center; gap: 1rem;
+      padding: 1rem 1.2rem; border-radius: 10px;
+      border: 1px solid var(--border); background: var(--card-bg);
+      text-decoration: none; color: var(--off-white); font-size: 0.9rem;
+      transition: border-color 0.25s, background 0.25s;
+    }
+    .channel:hover { border-color: rgba(58,190,255,0.4); background: rgba(58,190,255,0.07); color: var(--white); }
+    .channel-icon { font-size: 1.2rem; width: 36px; text-align: center; }
+    .contact-form { }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+    .form-group { display: flex; flex-direction: column; gap: 0.45rem; margin-bottom: 1rem; }
+    .form-group label { font-size: 0.8rem; font-weight: 600; color: var(--muted); letter-spacing: 0.06em; text-transform: uppercase; }
+    .form-group input, .form-group textarea, .form-group select {
+      background: rgba(10,22,40,0.7); border: 1.5px solid var(--border); border-radius: 9px;
+      padding: 0.8rem 1rem; color: var(--white); font-family: 'Inter', sans-serif; font-size: 0.92rem;
+      outline: none; transition: border-color 0.25s, box-shadow 0.25s;
+      appearance: none;
+    }
+    .form-group input::placeholder, .form-group textarea::placeholder { color: var(--muted); }
+    .form-group input:focus, .form-group textarea:focus, .form-group select:focus {
+      border-color: var(--accent); box-shadow: 0 0 0 3px rgba(58,190,255,0.12);
+    }
+    .form-group select option { background: var(--navy-mid); }
+    textarea { resize: vertical; min-height: 120px; }
+    .btn-submit {
+      width: 100%; background: var(--accent); color: var(--navy);
+      border: none; padding: 0.95rem; border-radius: 10px;
+      font-family: 'Space Grotesk', sans-serif; font-size: 1rem; font-weight: 700;
+      cursor: pointer; transition: transform 0.2s, box-shadow 0.2s;
+      display: flex; align-items: center; justify-content: center; gap: 0.5rem;
+    }
+    .btn-submit:hover { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(58,190,255,0.4); }
+    .btn-submit:active { transform: translateY(0); }
+
+    /* ── Footer ── */
+    footer {
+      background: var(--navy); border-top: 1px solid rgba(58,190,255,0.08);
+      padding: 3rem 6vw 2rem;
+    }
+    .footer-top { display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 2rem; }
+    .footer-brand .nav-logo { margin-bottom: 0.8rem; }
+    .footer-brand p { font-size: 0.85rem; color: var(--muted); max-width: 280px; }
+    .footer-links { display: flex; gap: 3rem; flex-wrap: wrap; }
+    .footer-col h4 { font-size: 0.78rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--off-white); margin-bottom: 1rem; }
+    .footer-col a { display: block; font-size: 0.88rem; color: var(--muted); text-decoration: none; margin-bottom: 0.55rem; transition: color 0.2s; }
+    .footer-col a:hover { color: var(--accent); }
+    .footer-bottom { border-top: 1px solid rgba(58,190,255,0.08); margin-top: 2rem; padding-top: 1.5rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; }
+    .footer-bottom p { font-size: 0.8rem; color: var(--muted); }
+    .footer-accent { color: var(--accent); font-weight: 600; }
+
+    /* ── Scroll Reveal ── */
+    .reveal {
+      opacity: 0; transform: translateY(32px);
+      transition: opacity 0.75s cubic-bezier(.16,1,.3,1), transform 0.75s cubic-bezier(.16,1,.3,1);
+    }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+    .reveal-delay-1 { transition-delay: 0.1s; }
+    .reveal-delay-2 { transition-delay: 0.2s; }
+    .reveal-delay-3 { transition-delay: 0.3s; }
+    .reveal-delay-4 { transition-delay: 0.4s; }
+    .reveal-delay-5 { transition-delay: 0.5s; }
+
+    /* ── Keyframes ── */
+    @keyframes fadeSlideDown { from{opacity:0;transform:translateY(-14px)} to{opacity:1;transform:translateY(0)} }
+    @keyframes revealUp { from{opacity:0;transform:translateY(42px)} to{opacity:1;transform:translateY(0)} }
+    @keyframes fadeIn { from{opacity:0} to{opacity:1} }
+    @keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-12px)} }
+
+    /* ── Mobile ── */
+    @media (max-width: 768px) {
+      nav { display: none; }
+      .about-grid, .contact-wrapper { grid-template-columns: 1fr; gap: 3rem; }
+      .form-row { grid-template-columns: 1fr; }
+      .process-steps::before { display: none; }
+      .about-visual { order: -1; }
+      .footer-top { flex-direction: column; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ── Navbar ── -->
+  <header id="navbar">
+    <a href="#" class="nav-logo">
+      <img src="logo_HO2.png" alt="HyperOlimpo Logo" />
+      <span>HyperOlimpo</span>
+    </a>
+    <ul>
+      <nav>
+        <a href="#services">Serviços</a>
+        <a href="#process">Processo</a>
+        <a href="#about">Sobre</a>
+        <a href="#contact">Contato</a>
+      </nav>
+    </ul>
+    <a href="#contact" class="nav-cta">Fale Conosco</a>
+  </header>
+
+  <!-- ── Hero ── -->
+  <section id="hero">
+    <div class="hero-bg"></div>
+    <div class="hero-grid"></div>
+    <canvas id="particles"></canvas>
+
+    <div class="hero-content">
+      <div class="hero-eyebrow">
+        <span class="dot"></span>
+        Tecnologia que eleva
+      </div>
+      <h1>
+        <span class="line"><span>Soluções Digitais</span></span>
+        <span class="line"><span>que <span class="accent">Alavancam</span></span></span>
+        <span class="line"><span>o seu Negócio</span></span>
+      </h1>
+      <p class="hero-sub">
+        Da automação à experiência digital completa — desenvolvemos sistemas, aplicativos, sites e integrações sob medida para pequenas, médias e grandes empresas.
+      </p>
+      <div class="hero-actions">
+        <a href="#services" class="btn-primary">
+          Nossos Serviços
+          <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </a>
+        <a href="#contact" class="btn-secondary">Solicitar Proposta</a>
+      </div>
+    </div>
+
+    <div class="hero-scroll">
+      <div class="scroll-mouse"></div>
+      <span>scroll</span>
+    </div>
+  </section>
+
+  <!-- ── Stats ── -->
+  <section id="stats">
+    <div class="stats-grid">
+      <div class="stat-item reveal">
+        <span class="num" data-count="120">0</span>
+        <span class="label">Projetos Entregues</span>
+      </div>
+      <div class="stat-item reveal reveal-delay-1">
+        <span class="num" data-count="98">0</span>
+        <span class="label">% Satisfação</span>
+      </div>
+      <div class="stat-item reveal reveal-delay-2">
+        <span class="num" data-count="5">0</span>
+        <span class="label">Anos de Experiência</span>
+      </div>
+      <div class="stat-item reveal reveal-delay-3">
+        <span class="num" data-count="40">0</span>
+        <span class="label">Empresas Atendidas</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Services ── -->
+  <section id="services">
+    <div class="services-header reveal">
+      <div class="section-intro">
+        <span class="section-tag">O que fazemos</span>
+        <h2>Soluções para cada<br />etapa do seu crescimento</h2>
+        <p>Do conceito à entrega — tecnologia inteligente e prática que transforma desafios em vantagem competitiva.</p>
+      </div>
+    </div>
+    <div class="services-grid">
+      <div class="service-card reveal reveal-delay-1">
+        <div class="service-icon">💻</div>
+        <h3>Sistemas & Software</h3>
+        <p>Sistemas sob medida para sua operação: ERPs, CRMs, dashboards e plataformas que automatizam e escalam com o seu negócio.</p>
+        <span class="card-arrow">→</span>
+      </div>
+      <div class="service-card reveal reveal-delay-2">
+        <div class="service-icon">🌐</div>
+        <h3>Desenvolvimento Web</h3>
+        <p>Sites, landing pages e portais corporativos com design moderno, alta performance e otimizados para conversão.</p>
+        <span class="card-arrow">→</span>
+      </div>
+      <div class="service-card reveal reveal-delay-3">
+        <div class="service-icon">📱</div>
+        <h3>Aplicativos Mobile</h3>
+        <p>Apps iOS e Android nativos ou multiplataforma — intuitivos, rápidos e integrados aos seus processos internos.</p>
+        <span class="card-arrow">→</span>
+      </div>
+      <div class="service-card reveal reveal-delay-4">
+        <div class="service-icon">⚡</div>
+        <h3>Automação de Processos</h3>
+        <p>Elimine tarefas manuais e retrabalho com fluxos automatizados, integrações via API e bots inteligentes.</p>
+        <span class="card-arrow">→</span>
+      </div>
+      <div class="service-card reveal reveal-delay-5">
+        <div class="service-icon">🔗</div>
+        <h3>Integrações & APIs</h3>
+        <p>Conectamos suas ferramentas: ERP, e-commerce, CRM, ERPs legados, gateways e qualquer serviço que você usa.</p>
+        <span class="card-arrow">→</span>
+      </div>
+      <div class="service-card reveal reveal-delay-1">
+        <div class="service-icon">📊</div>
+        <h3>Business Intelligence</h3>
+        <p>Dashboards e relatórios em tempo real para decisões embasadas em dados — visibilidade total do seu negócio.</p>
+        <span class="card-arrow">→</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Process ── -->
+  <section id="process">
+    <div class="section-intro reveal" style="margin: 0 auto 1rem; text-align: center; max-width: 560px;">
+      <span class="section-tag">Como trabalhamos</span>
+      <h2>Do diagnóstico à solução</h2>
+      <p>Um processo claro e transparente, do primeiro contato à entrega e suporte contínuo.</p>
+    </div>
+    <div class="process-steps">
+      <div class="process-step reveal reveal-delay-1">
+        <div class="step-num">01</div>
+        <h3>Diagnóstico</h3>
+        <p>Entendemos profundamente o seu negócio, desafios e objetivos antes de qualquer linha de código.</p>
+      </div>
+      <div class="process-step reveal reveal-delay-2">
+        <div class="step-num">02</div>
+        <h3>Proposta</h3>
+        <p>Desenvolvemos uma solução personalizada com escopo claro, prazo definido e custo justo.</p>
+      </div>
+      <div class="process-step reveal reveal-delay-3">
+        <div class="step-num">03</div>
+        <h3>Desenvolvimento</h3>
+        <p>Construção ágil com entregas parciais e comunicação constante em cada etapa.</p>
+      </div>
+      <div class="process-step reveal reveal-delay-4">
+        <div class="step-num">04</div>
+        <h3>Entrega & Suporte</h3>
+        <p>Implantação assistida, treinamento da equipe e suporte contínuo pós-lançamento.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── About ── -->
+  <section id="about">
+    <div class="about-grid">
+      <div class="about-visual reveal">
+        <div class="about-logo-wrap">
+          <div class="orbit orbit-1"><div class="orbit-dot"></div></div>
+          <div class="orbit orbit-2"><div class="orbit-dot"></div></div>
+          <img src="logo_HO2.png" alt="HyperOlimpo" />
+        </div>
+      </div>
+      <div class="about-text">
+        <div class="section-intro reveal">
+          <span class="section-tag">Sobre nós</span>
+          <h2>Tecnologia com propósito,<br />resultado com precisão</h2>
+          <p>A HyperOlimpo nasceu da convicção de que tecnologia bem aplicada é o maior diferencial competitivo de qualquer empresa — independente do tamanho ou segmento.</p>
+          <p style="margin-top:1rem; color: var(--muted);">Atuamos como parceiros estratégicos, entendendo o contexto do negócio antes de propor qualquer solução. Nossa missão é entregar projetos que realmente funcionam, otimizam processos e agregam valor mensurável.</p>
+        </div>
+        <div class="values-list reveal reveal-delay-1">
+          <div class="value-item">
+            <span class="value-icon">⚡</span>
+            Soluções práticas e implementáveis
+          </div>
+          <div class="value-item">
+            <span class="value-icon">🎯</span>
+            Foco no resultado do cliente
+          </div>
+          <div class="value-item">
+            <span class="value-icon">🔒</span>
+            Código seguro, escalável e documentado
+          </div>
+          <div class="value-item">
+            <span class="value-icon">🤝</span>
+            Parceria de longo prazo
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Why ── -->
+  <section id="why">
+    <div class="section-intro reveal" style="margin: 0 auto 1rem;">
+      <span class="section-tag">Por que a HyperOlimpo</span>
+      <h2>O que nos diferencia</h2>
+      <p>Mais do que uma fornecedora de tecnologia — somos parceiros que se importam com o seu crescimento.</p>
+    </div>
+    <div class="why-grid">
+      <div class="why-card reveal reveal-delay-1">
+        <span class="why-num">01</span>
+        <h3>Entrega Garantida</h3>
+        <p>Cumprimos prazos e escopo. Processo ágil com checkpoints regulares para total transparência.</p>
+      </div>
+      <div class="why-card reveal reveal-delay-2">
+        <span class="why-num">02</span>
+        <h3>Soluções Sob Medida</h3>
+        <p>Nada de templates prontos. Cada projeto é desenhado especificamente para o seu contexto.</p>
+      </div>
+      <div class="why-card reveal reveal-delay-3">
+        <span class="why-num">03</span>
+        <h3>Tecnologia de Ponta</h3>
+        <p>Utilizamos frameworks e arquiteturas modernas, garantindo sistemas rápidos, seguros e escaláveis.</p>
+      </div>
+      <div class="why-card reveal reveal-delay-4">
+        <span class="why-num">04</span>
+        <h3>Suporte Contínuo</h3>
+        <p>O relacionamento não termina na entrega. Estamos disponíveis para evoluir e manter sua solução.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Contact ── -->
+  <section id="contact">
+    <div class="contact-wrapper">
+      <div class="contact-info reveal">
+        <span class="section-tag">Contato</span>
+        <h2>Vamos transformar sua ideia em realidade</h2>
+        <p>Conte-nos o seu desafio. Nossa equipe responde em até 24 horas com uma análise inicial sem compromisso.</p>
+        <div class="contact-channels">
+          <a href="mailto:contato@hyperolimpo.com.br" class="channel">
+            <span class="channel-icon">✉️</span>
+            <div>
+              <div style="font-weight:600;font-size:0.88rem;margin-bottom:2px;">E-mail</div>
+              <div style="font-size:0.82rem;color:var(--muted)">contato@hyperolimpo.com.br</div>
+            </div>
+          </a>
+          <a href="https://wa.me/5500000000000" class="channel">
+            <span class="channel-icon">💬</span>
+            <div>
+              <div style="font-weight:600;font-size:0.88rem;margin-bottom:2px;">WhatsApp</div>
+              <div style="font-size:0.82rem;color:var(--muted)">Atendimento rápido via chat</div>
+            </div>
+          </a>
+          <a href="#" class="channel">
+            <span class="channel-icon">📍</span>
+            <div>
+              <div style="font-weight:600;font-size:0.88rem;margin-bottom:2px;">Localização</div>
+              <div style="font-size:0.82rem;color:var(--muted)">Brasil — atendimento remoto e presencial</div>
+            </div>
+          </a>
+        </div>
+      </div>
+      <div class="contact-form reveal reveal-delay-2">
+        <form id="contactForm" onsubmit="handleSubmit(event)">
+          <div class="form-row">
+            <div class="form-group">
+              <label>Nome</label>
+              <input type="text" placeholder="Seu nome" required />
+            </div>
+            <div class="form-group">
+              <label>Empresa</label>
+              <input type="text" placeholder="Nome da empresa" />
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>E-mail</label>
+              <input type="email" placeholder="seu@email.com" required />
+            </div>
+            <div class="form-group">
+              <label>Telefone</label>
+              <input type="tel" placeholder="(00) 00000-0000" />
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Tipo de Projeto</label>
+            <select>
+              <option value="">Selecione uma opção</option>
+              <option>Sistema / Software Personalizado</option>
+              <option>Site ou Landing Page</option>
+              <option>Aplicativo Mobile</option>
+              <option>Automação de Processos</option>
+              <option>Integração / API</option>
+              <option>Business Intelligence</option>
+              <option>Outro</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Mensagem</label>
+            <textarea placeholder="Descreva brevemente seu projeto ou necessidade..."></textarea>
+          </div>
+          <button type="submit" class="btn-submit" id="submitBtn">
+            <span id="btnText">Enviar Mensagem</span>
+            <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          </button>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Footer ── -->
+  <footer>
+    <div class="footer-top">
+      <div class="footer-brand">
+        <a href="#" class="nav-logo">
+          <img src="logo_HO2.png" alt="HyperOlimpo" />
+          <span>HyperOlimpo</span>
+        </a>
+        <p>Tecnologia inteligente que eleva pessoas, processos e empresas ao próximo nível.</p>
+      </div>
+      <div class="footer-links">
+        <div class="footer-col">
+          <h4>Serviços</h4>
+          <a href="#services">Sistemas & Software</a>
+          <a href="#services">Desenvolvimento Web</a>
+          <a href="#services">Apps Mobile</a>
+          <a href="#services">Automação</a>
+        </div>
+        <div class="footer-col">
+          <h4>Empresa</h4>
+          <a href="#about">Sobre nós</a>
+          <a href="#process">Processo</a>
+          <a href="#why">Diferenciais</a>
+          <a href="#contact">Contato</a>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2026 <span class="footer-accent">HyperOlimpo</span>. Todos os direitos reservados.</p>
+      <p style="font-size:0.78rem">Desenvolvido pela HyperOlimpo</p>
+    </div>
+  </footer>
+
+  <script>
+    /* ── Navbar scroll effect ── */
+    const navbar = document.getElementById('navbar');
+    window.addEventListener('scroll', () => {
+      navbar.classList.toggle('scrolled', window.scrollY > 50);
+    });
+
+    /* ── Scroll reveal ── */
+    const reveals = document.querySelectorAll('.reveal');
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); } });
+    }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+    reveals.forEach(el => observer.observe(el));
+
+    /* ── Counter animation ── */
+    const counters = document.querySelectorAll('.num[data-count]');
+    const countObserver = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (!e.isIntersecting) return;
+        const el = e.target;
+        const target = +el.dataset.count;
+        const suffix = el.parentElement.querySelector('.label').textContent.includes('%') ? '%' : '+';
+        let start = 0;
+        const step = Math.ceil(target / 50);
+        const interval = setInterval(() => {
+          start = Math.min(start + step, target);
+          el.textContent = start + suffix;
+          if (start >= target) clearInterval(interval);
+        }, 30);
+        countObserver.unobserve(el);
+      });
+    }, { threshold: 0.5 });
+    counters.forEach(c => countObserver.observe(c));
+
+    /* ── Particle system ── */
+    (function () {
+      const canvas = document.getElementById('particles');
+      const ctx = canvas.getContext('2d');
+      let W, H, particles = [];
+      const COUNT = 55;
+
+      function resize() {
+        W = canvas.width = canvas.offsetWidth;
+        H = canvas.height = canvas.offsetHeight;
+      }
+      window.addEventListener('resize', resize);
+      resize();
+
+      class Particle {
+        constructor() { this.reset(); }
+        reset() {
+          this.x = Math.random() * W;
+          this.y = Math.random() * H;
+          this.r = Math.random() * 1.6 + 0.4;
+          this.vx = (Math.random() - 0.5) * 0.35;
+          this.vy = (Math.random() - 0.5) * 0.35;
+          this.alpha = Math.random() * 0.5 + 0.1;
+        }
+        update() {
+          this.x += this.vx; this.y += this.vy;
+          if (this.x < 0 || this.x > W || this.y < 0 || this.y > H) this.reset();
+        }
+        draw() {
+          ctx.beginPath();
+          ctx.arc(this.x, this.y, this.r, 0, Math.PI * 2);
+          ctx.fillStyle = `rgba(58,190,255,${this.alpha})`;
+          ctx.fill();
+        }
+      }
+
+      for (let i = 0; i < COUNT; i++) particles.push(new Particle());
+
+      function drawLines() {
+        for (let i = 0; i < particles.length; i++) {
+          for (let j = i + 1; j < particles.length; j++) {
+            const dx = particles[i].x - particles[j].x;
+            const dy = particles[i].y - particles[j].y;
+            const dist = Math.sqrt(dx * dx + dy * dy);
+            if (dist < 120) {
+              ctx.beginPath();
+              ctx.moveTo(particles[i].x, particles[i].y);
+              ctx.lineTo(particles[j].x, particles[j].y);
+              ctx.strokeStyle = `rgba(58,190,255,${0.08 * (1 - dist / 120)})`;
+              ctx.lineWidth = 0.8;
+              ctx.stroke();
+            }
+          }
+        }
+      }
+
+      function loop() {
+        ctx.clearRect(0, 0, W, H);
+        particles.forEach(p => { p.update(); p.draw(); });
+        drawLines();
+        requestAnimationFrame(loop);
+      }
+      loop();
+    })();
+
+    /* ── Parallax hero grid ── */
+    const heroGrid = document.querySelector('.hero-grid');
+    window.addEventListener('scroll', () => {
+      const y = window.scrollY;
+      if (heroGrid) heroGrid.style.transform = `translateY(${y * 0.3}px)`;
+    });
+
+    /* ── Form submit ── */
+    function handleSubmit(e) {
+      e.preventDefault();
+      const btn = document.getElementById('submitBtn');
+      const txt = document.getElementById('btnText');
+      btn.disabled = true;
+      txt.textContent = 'Enviando...';
+      setTimeout(() => {
+        txt.textContent = '✓ Mensagem Enviada!';
+        btn.style.background = '#22c55e';
+        setTimeout(() => {
+          txt.textContent = 'Enviar Mensagem';
+          btn.style.background = '';
+          btn.disabled = false;
+          e.target.reset();
+        }, 3000);
+      }, 1500);
+    }
+  </script>
+</body>
+</html>
