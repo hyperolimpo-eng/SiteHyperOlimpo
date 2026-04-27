@@ -17,6 +17,20 @@ Cada entrada documenta:
 
 <!-- As entradas mais recentes ficam no topo -->
 
+## 2026-04-27 — Separação de CSS em arquivos externos
+
+- **Arquivos criados:** `base.css`, `index.css`, `cadastro-cliente.css`, `reset-password.css`
+- **Arquivos modificados:** `index.html`, `cadastro-cliente.html`, `reset-password.html`
+- **Comportamento anterior:** Todo o CSS de cada página estava inline em blocos `<style>` dentro do próprio HTML. Variáveis `:root` e reset duplicados nas três páginas.
+- **Comportamento novo:**
+  - `base.css`: reset universal, variáveis CSS (`:root`) e estilos base (scrollbar, `::selection`) compartilhados por todas as páginas
+  - `index.css`: todos os estilos exclusivos da landing page (`index.html`)
+  - `cadastro-cliente.css`: todos os estilos exclusivos da página de cadastro
+  - `reset-password.css`: todos os estilos exclusivos da página de redefinição de senha
+  - Cada HTML carrega `base.css` + seu CSS específico via `<link rel="stylesheet">`
+  - Blocos `<style>` inline removidos completamente dos três arquivos HTML
+- **Motivação:** Solicitação do usuário para melhorar a manutenibilidade e separação de responsabilidades
+
 ## 2026-04-27 — Integração completa com Supabase (banco de dados e autenticação)
 
 - **Arquivos:** `supabase-config.js` (novo), `schema.sql` (novo), `reset-password.html` (novo), `index.html`, `cadastro-cliente.html`
