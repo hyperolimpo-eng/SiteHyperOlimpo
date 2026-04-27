@@ -978,26 +978,26 @@
           <div class="form-row">
             <div class="form-group">
               <label>Nome</label>
-              <input type="text" placeholder="Seu nome" required />
+              <input type="text" name="nome" placeholder="Seu nome" required />
             </div>
             <div class="form-group">
               <label>Empresa</label>
-              <input type="text" placeholder="Nome da empresa" />
+              <input type="text" name="empresa" placeholder="Nome da empresa" />
             </div>
           </div>
           <div class="form-row">
             <div class="form-group">
               <label>E-mail</label>
-              <input type="email" placeholder="seu@email.com" required />
+              <input type="email" name="email" placeholder="seu@email.com" required />
             </div>
             <div class="form-group">
               <label>Telefone</label>
-              <input type="tel" placeholder="(00) 00000-0000" />
+              <input type="tel" name="telefone" placeholder="(00) 00000-0000" />
             </div>
           </div>
           <div class="form-group">
             <label>Tipo de Projeto</label>
-            <select>
+            <select name="tipo_projeto">
               <option value="">Selecione uma opção</option>
               <option>Sistema / Software Personalizado</option>
               <option>Site ou Landing Page</option>
@@ -1010,7 +1010,7 @@
           </div>
           <div class="form-group">
             <label>Mensagem</label>
-            <textarea placeholder="Descreva brevemente seu projeto ou necessidade..."></textarea>
+            <textarea name="mensagem" placeholder="Descreva brevemente seu projeto ou necessidade..."></textarea>
           </div>
           <button type="submit" class="btn-submit" id="submitBtn">
             <span id="btnText">Enviar Mensagem</span>
@@ -1170,7 +1170,10 @@
     </svg>
   </a>
 
-  <!-- EmailJS SDK — necessário para envio de e-mails pelo frontend -->
+  <!-- Supabase SDK -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="supabase-config.js"></script>
+  <!-- EmailJS SDK — para e-mail de boas-vindas ao novo cliente (parceria) -->
   <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 
   <script>
@@ -1365,37 +1368,47 @@
       document.getElementById('goParceria').addEventListener('click',       () => showPanel('parceria'));
       document.getElementById('goLoginFromParce').addEventListener('click', () => showPanel('login'));
 
-      /* ── Login ── */
-      document.getElementById('loginForm').addEventListener('submit', e => {
+      /* ── Login via Supabase Auth ── */
+      document.getElementById('loginForm').addEventListener('submit', async e => {
         e.preventDefault();
         const email = document.getElementById('loginEmail').value.trim();
         const pass  = document.getElementById('loginPassword').value;
         setAlert('loginAlert', '', false);
         if (!email || !pass) { setAlert('loginAlert', 'Preencha e-mail e senha.', true); return; }
         setLoading('loginBtn', 'loginBtnText', true);
-        // TODO: substituir pelo endpoint de autenticação (Firebase Auth / Supabase / API própria)
-        setTimeout(() => {
-          setLoading('loginBtn', 'loginBtnText', false, 'Entrar');
+
+        const { error } = await db.auth.signInWithPassword({ email, password: pass });
+        setLoading('loginBtn', 'loginBtnText', false, 'Entrar');
+        if (error) {
           setAlert('loginAlert', 'E-mail ou senha incorretos. Verifique suas credenciais.', true);
-        }, 1400);
+        } else {
+          closeModal();
+          // TODO: redirecionar para painel do cliente quando a página existir
+          // window.location.href = '/painel-cliente.html';
+        }
       });
 
-      /* ── Recuperar acesso ── */
-      document.getElementById('forgotForm').addEventListener('submit', e => {
+      /* ── Recuperar acesso via Supabase Auth ── */
+      document.getElementById('forgotForm').addEventListener('submit', async e => {
         e.preventDefault();
         const email = document.getElementById('recoveryEmail').value.trim();
         setAlert('forgotAlert', '', false);
         if (!validEmail(email)) { setAlert('forgotAlert', 'Informe um e-mail válido.', true); return; }
         setLoading('forgotBtn', 'forgotBtnText', true);
-        // TODO: chamar POST /api/recovery { email } — backend valida e envia via atendimento@hyperolimpo.com.br
-        setTimeout(() => {
-          setLoading('forgotBtn', 'forgotBtnText', false, 'Enviar Link de Recuperação');
+
+        const { error } = await db.auth.resetPasswordForEmail(email, {
+          redirectTo: `${location.origin}/reset-password.html`
+        });
+        setLoading('forgotBtn', 'forgotBtnText', false, 'Enviar Link de Recuperação');
+        if (error) {
+          setAlert('forgotAlert', 'Erro ao enviar. Tente novamente.', true);
+        } else {
           document.getElementById('forgotFormWrap').style.display = 'none';
           document.getElementById('forgotSuccess').style.display = 'block';
-        }, 1400);
+        }
       });
 
-      /* ── Solicitar Parceria ── */
+      /* ── Solicitar Parceria — Supabase + EmailJS + CallMeBot ── */
       document.getElementById('parceForm').addEventListener('submit', async e => {
         e.preventDefault();
         const email = document.getElementById('parceEmail').value.trim();
@@ -1407,57 +1420,77 @@
         const cadastroUrl = `${location.origin}/cadastro-cliente.html`;
         const agora = new Date().toLocaleString('pt-BR', { timeZone: 'America/Sao_Paulo' });
 
+        // 1 — Salva solicitação no banco
+        const { error: dbError } = await db.from('solicitacoes_parceria').insert({ email });
+        if (dbError && dbError.code !== '23505') { // ignora duplicata
+          setLoading('parceBtn', 'parceBtnText', false, 'Enviar Link de Cadastro');
+          setAlert('parceAlert', 'Erro ao registrar solicitação. Tente novamente.', true);
+          return;
+        }
+
         try {
-          // 1 — E-mail ao novo cliente com o link de cadastro
+          // 2 — E-mail ao cliente com o link de cadastro
           await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TPL_CLIENTE, {
-            to_email:      email,
-            cadastro_url:  cadastroUrl,
-            reply_to:      'atendimento@hyperolimpo.com.br'
+            to_email: email, cadastro_url: cadastroUrl,
+            reply_to: 'atendimento@hyperolimpo.com.br'
           }, EMAILJS_PUBLIC_KEY);
 
-          // 2 — E-mail interno de notificação para a equipe
+          // 3 — E-mail interno para a equipe
           await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TPL_INTERNO, {
-            cliente_email: email,
-            data_hora:     agora,
-            cadastro_url:  cadastroUrl
+            cliente_email: email, data_hora: agora, cadastro_url: cadastroUrl
           }, EMAILJS_PUBLIC_KEY);
 
-          // 3 — Notificação WhatsApp via CallMeBot
+          // 4 — WhatsApp via CallMeBot
           const waMsg = encodeURIComponent(
-            `🔔 *Novo cliente solicitando parceria!*\n📧 E-mail: ${email}\n🕐 ${agora}\n🔗 Cadastro: ${cadastroUrl}`
+            `🔔 *Novo cliente solicitando parceria!*\n📧 E-mail: ${email}\n🕐 ${agora}\n🔗 ${cadastroUrl}`
           );
-          await fetch(`https://api.callmebot.com/whatsapp.php?phone=${WA_NUMBER}&text=${waMsg}&apikey=${WA_APIKEY}`)
-            .catch(() => {}); // falha silenciosa se não configurado
+          fetch(`https://api.callmebot.com/whatsapp.php?phone=${WA_NUMBER}&text=${waMsg}&apikey=${WA_APIKEY}`)
+            .catch(() => {});
 
           setLoading('parceBtn', 'parceBtnText', false, 'Enviar Link de Cadastro');
           document.getElementById('parceFormWrap').style.display = 'none';
           document.getElementById('parceSuccess').style.display  = 'block';
 
-        } catch (err) {
+        } catch {
           setLoading('parceBtn', 'parceBtnText', false, 'Enviar Link de Cadastro');
-          setAlert('parceAlert',
-            'Erro ao enviar. Configure o EmailJS ou entre em contato pelo WhatsApp.', true);
+          setAlert('parceAlert', 'Solicitação salva! Configure o EmailJS para envio automático do link.', true);
         }
       });
     })();
 
-    /* ── Form submit ── */
-    function handleSubmit(e) {
+    /* ── Form submit — salva contato no Supabase ── */
+    async function handleSubmit(e) {
       e.preventDefault();
       const btn = document.getElementById('submitBtn');
       const txt = document.getElementById('btnText');
+      const fd  = new FormData(e.target);
+
       btn.disabled = true;
       txt.textContent = 'Enviando...';
-      setTimeout(() => {
+
+      const { error } = await db.from('contatos').insert({
+        nome:         fd.get('nome')         || null,
+        empresa:      fd.get('empresa')      || null,
+        email:        fd.get('email')        || null,
+        telefone:     fd.get('telefone')     || null,
+        tipo_projeto: fd.get('tipo_projeto') || null,
+        mensagem:     fd.get('mensagem')     || null
+      });
+
+      if (error) {
+        txt.textContent = 'Erro ao enviar. Tente novamente.';
+        btn.style.background = '#ef4444';
+      } else {
         txt.textContent = '✓ Mensagem Enviada!';
         btn.style.background = '#22c55e';
-        setTimeout(() => {
-          txt.textContent = 'Enviar Mensagem';
-          btn.style.background = '';
-          btn.disabled = false;
-          e.target.reset();
-        }, 3000);
-      }, 1500);
+      }
+
+      setTimeout(() => {
+        txt.textContent = 'Enviar Mensagem';
+        btn.style.background = '';
+        btn.disabled = false;
+        if (!error) e.target.reset();
+      }, 3000);
     }
   </script>
 </body>

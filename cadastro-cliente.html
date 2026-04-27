@@ -724,6 +724,8 @@
     </div>
   </div>
 
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="supabase-config.js"></script>
   <script>
     /* ── Tipo PF / PJ ── */
     function setTipo(tipo) {
@@ -862,7 +864,7 @@
     }
 
     /* ── Form submit ── */
-    document.getElementById('cadastroForm').addEventListener('submit', function (e) {
+    document.getElementById('cadastroForm').addEventListener('submit', async function (e) {
       e.preventDefault();
       const tipo = document.getElementById('tipoPessoa').value;
       let valid = true;
@@ -928,19 +930,95 @@
         return;
       }
 
-      // Submit (TODO: conectar ao backend / Firebase / Supabase)
       const btn = document.getElementById('btnSubmit');
       const txt = document.getElementById('btnSubmitText');
       btn.disabled = true;
-      txt.textContent = 'Enviando...';
+      txt.textContent = 'Criando conta...';
 
-      setTimeout(() => {
-        const nome = document.querySelector('[name="nomeCompleto"]').value.split(' ')[0];
+      try {
+        const tipo  = document.getElementById('tipoPessoa').value;
+        const fd    = new FormData(document.getElementById('cadastroForm'));
+        const email = fd.get('email');
+        const senha = fd.get('senha');
+
+        function toISO(dateStr) {
+          if (!dateStr) return null;
+          const [d, m, y] = dateStr.split('/');
+          return (d && m && y) ? `${y}-${m.padStart(2,'0')}-${d.padStart(2,'0')}` : null;
+        }
+
+        const horarios = [...document.querySelectorAll('[name="horario"]:checked')].map(el => el.value);
+        const servicos = [...document.querySelectorAll('[name="servico"]:checked')].map(el => el.value);
+        const linkedin  = tipo === 'PF' ? fd.get('linkedin')  : fd.get('linkedinEmpresa');
+        const instagram = tipo === 'PF' ? fd.get('instagram') : fd.get('instagramEmpresa');
+
+        // 1. Criar usuário no Supabase Auth
+        const { data: authData, error: authError } = await db.auth.signUp({
+          email,
+          password: senha,
+          options: { data: { nome: fd.get('nomeCompleto') } }
+        });
+        if (authError) throw authError;
+
+        // 2. Inserir registro na tabela clientes
+        const { error: dbError } = await db.from('clientes').insert({
+          tipo_pessoa:      tipo,
+          user_id:          authData.user?.id,
+          status:           'pendente',
+          nome_completo:    fd.get('nomeCompleto')     || null,
+          cpf:              fd.get('cpf')              || null,
+          rg:               fd.get('rg')               || null,
+          orgao_emissor:    fd.get('orgaoEmissor')     || null,
+          data_nascimento:  toISO(fd.get('dataNascimento')),
+          estado_civil:     fd.get('estadoCivil')      || null,
+          genero:           fd.get('genero')           || null,
+          profissao:        fd.get('profissao')        || null,
+          nacionalidade:    fd.get('nacionalidade')    || null,
+          razao_social:     fd.get('razaoSocial')      || null,
+          nome_fantasia:    fd.get('nomeFantasia')     || null,
+          cnpj:             fd.get('cnpj')             || null,
+          inscricao_est:    fd.get('inscricaoEstadual')|| null,
+          inscricao_mun:    fd.get('inscricaoMunicipal')|| null,
+          data_abertura:    toISO(fd.get('dataAbertura')),
+          natureza_juridica: fd.get('naturezaJuridica')|| null,
+          porte:            fd.get('porte')            || null,
+          ramo_atividade:   fd.get('ramoAtividade')   || null,
+          site_empresa:     fd.get('siteEmpresa')      || null,
+          cargo:            fd.get('cargo')            || null,
+          email:            email,
+          email_secundario: fd.get('emailSecundario')  || null,
+          celular:          fd.get('celular')          || null,
+          telefone_fixo:    fd.get('telefoneFixo')     || null,
+          linkedin:         linkedin                   || null,
+          instagram:        instagram                  || null,
+          horario_contato:  horarios.length ? horarios : null,
+          cep:              fd.get('cep')              || null,
+          logradouro:       fd.get('logradouro')       || null,
+          numero:           fd.get('numero')           || null,
+          complemento:      fd.get('complemento')      || null,
+          bairro:           fd.get('bairro')           || null,
+          cidade:           fd.get('cidade')           || null,
+          estado_uf:        fd.get('estado')           || null,
+          pais:             fd.get('pais')             || 'Brasil',
+          servicos:         servicos.length ? servicos : null,
+          origem:           fd.get('origem')           || null,
+          orcamento:        fd.get('orcamento')        || null,
+          descricao:        fd.get('descricao')        || null,
+          observacoes:      fd.get('observacoes')      || null,
+        });
+        if (dbError) throw dbError;
+
+        const nome = (fd.get('nomeCompleto') || '').split(' ')[0];
         document.getElementById('successMsg').innerHTML =
-          `Olá, <strong style="color:var(--accent)">${nome}</strong>! Seu cadastro foi recebido com sucesso.<br/>
-           Nossa equipe irá validar suas informações e enviar os dados de acesso para o e-mail cadastrado em até <strong>24 horas</strong>.`;
+          `Olá, <strong style="color:var(--accent)">${nome}</strong>! Seu cadastro foi criado com sucesso.<br/>
+           Verifique seu e-mail para confirmar a conta. Nossa equipe entrará em contato em até <strong>24 horas</strong>.`;
         document.getElementById('successOverlay').classList.add('show');
-      }, 1600);
+
+      } catch (err) {
+        btn.disabled = false;
+        txt.textContent = 'Criar Cadastro';
+        alert('Erro ao criar cadastro: ' + (err.message || 'Tente novamente.'));
+      }
     });
   </script>
 </body>

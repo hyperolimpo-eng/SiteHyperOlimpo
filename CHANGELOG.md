@@ -17,6 +17,27 @@ Cada entrada documenta:
 
 <!-- As entradas mais recentes ficam no topo -->
 
+## 2026-04-27 — Integração completa com Supabase (banco de dados e autenticação)
+
+- **Arquivos:** `supabase-config.js` (novo), `schema.sql` (novo), `reset-password.html` (novo), `index.html`, `cadastro-cliente.html`
+- **Comportamento anterior:** Todos os formulários eram fake (sem backend). Login, recuperação de senha, contato e cadastro não persistiam dados.
+- **Comportamento novo:**
+  - **`supabase-config.js`:** Inicializa cliente Supabase global (`db`) com URL e anon key. Carregado por todas as páginas.
+  - **`schema.sql`:** Esquema completo do banco com tabelas `clientes`, `contatos` e `solicitacoes_parceria`. RLS habilitado: insert público para todas; select/update próprio para clientes via `auth.uid() = user_id`. Trigger `update_updated_at` na tabela clientes.
+  - **`reset-password.html`:** Página de redefinição de senha. Detecta evento `PASSWORD_RECOVERY` via `db.auth.onAuthStateChange()` e chama `db.auth.updateUser({ password })`.
+  - **`index.html` — Formulário de contato:** `handleSubmit` agora é `async`; salva no Supabase `db.from('contatos').insert({...})` com todos os campos com `name` attribute.
+  - **`index.html` — Login:** Usa `db.auth.signInWithPassword({ email, password })`.
+  - **`index.html` — Recuperar acesso:** Usa `db.auth.resetPasswordForEmail(email, { redirectTo: .../reset-password.html })`.
+  - **`index.html` — Solicitar Parceria:** Salva e-mail em `db.from('solicitacoes_parceria').insert({ email })` antes de enviar EmailJS e CallMeBot.
+  - **`cadastro-cliente.html`:** Submit handler agora `async`. Chama `db.auth.signUp({ email, password })` para criar conta Auth, depois `db.from('clientes').insert({...})` com todos os campos do formulário (PF e PJ). Datas convertidas de DD/MM/YYYY para ISO YYYY-MM-DD. Arrays (horário, serviços) passados como TEXT[].
+- **Pendente de configuração pelo usuário:**
+  - Criar projeto no Supabase, rodar `schema.sql` no SQL Editor
+  - Preencher `SUPABASE_URL` e `SUPABASE_ANON_KEY` em `supabase-config.js`
+  - Configurar EmailJS (templates TPL_LINK_CADASTRO e TPL_NOTIF_INTERNA)
+  - Registrar CallMeBot para obter apikey do WhatsApp
+  - Configurar URL de redirecionamento de auth no painel Supabase
+- **Motivação:** Solicitação do usuário para substituir os formulários fake por banco de dados real
+
 ## 2026-04-27 — Fluxo "Solicitar Parceria" na pop-up de login
 
 - **Arquivo:** `index.html`
