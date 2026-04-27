@@ -30,6 +30,13 @@ Documentação do projeto e registro de ações executadas pelo assistente.
 
 <!-- As entradas mais recentes ficam no topo -->
 
+### 2026-04-27 — Implementação de SEO completo no index.html
+- Adicionadas meta tags (description, keywords, robots, canonical)
+- Adicionadas tags Open Graph e Twitter Card para compartilhamento social
+- Adicionados dados estruturados JSON-LD (Organization + WebSite)
+- Keywords focadas em: desenvolvimento de software, criação de sites, automação, BI — segmento tecnologia, Brasil
+- Motivação: solicitação do usuário para otimizar o site para buscadores
+
 ### 2026-04-27 — Configuração da branch staging e convenção de commits
 - Criada branch `staging` a partir de `main`
 - Definida convenção: cada alteração no site gera um commit na branch `staging`
