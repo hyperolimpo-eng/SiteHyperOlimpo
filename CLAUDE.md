@@ -30,6 +30,12 @@ Documentação do projeto e registro de ações executadas pelo assistente.
 
 <!-- As entradas mais recentes ficam no topo -->
 
+### 2026-04-27 — Correção do hamburger menu (backdrop-filter containing block)
+- Bug: `backdrop-filter` no header criava containing block para `position:fixed` do nav filho, quebrando o overlay ao rolar
+- Fix: `<nav id="navOverlay">` movido para fora do header (irmão); `#navMenu` permanece no header para desktop
+- `#navbar` z-index elevado para 1060 (acima do overlay 1050)
+- Motivação: menu mobile não aparecia corretamente ao acionar com a página rolada
+
 ### 2026-04-27 — Responsividade total (3 breakpoints + hamburger menu)
 - Adicionados breakpoints: ≤1024px (tablet grande), ≤768px (tablet/mobile), ≤480px (mobile pequeno)
 - Hamburger menu com overlay fullscreen, animação de X, fechamento por link/Esc, bloqueio de scroll

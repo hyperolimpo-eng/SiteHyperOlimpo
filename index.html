@@ -106,10 +106,14 @@
 
     /* ── Navbar ── */
     #navbar {
-      position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+      position: fixed; top: 0; left: 0; right: 0; z-index: 1060;
       padding: 1.2rem 6vw;
       display: flex; align-items: center; justify-content: space-between;
       transition: background 0.4s, backdrop-filter 0.4s, box-shadow 0.4s;
+    }
+    /* Overlay mobile — oculto por padrão; nunca dentro do header */
+    #navOverlay {
+      display: none;
     }
     #navbar.scrolled {
       background: rgba(10, 22, 40, 0.92);
@@ -489,7 +493,10 @@
       /* Nav: hamburger */
       .nav-burger { display: flex; }
       .nav-cta { display: none; }
-      nav {
+      #navMenu { display: none; }
+
+      /* Overlay mobile — fora do header, position:fixed referencia a viewport corretamente */
+      #navOverlay {
         display: flex; flex-direction: column; align-items: center; justify-content: center;
         gap: 2.2rem;
         position: fixed; inset: 0; z-index: 1050;
@@ -498,11 +505,12 @@
         opacity: 0; pointer-events: none;
         transition: opacity 0.35s cubic-bezier(.16,1,.3,1);
       }
-      nav.open { opacity: 1; pointer-events: all; }
-      nav a { font-size: 1.35rem; font-weight: 600; letter-spacing: 0.04em; }
+      #navOverlay.open { opacity: 1; pointer-events: all; }
+      #navOverlay a { font-size: 1.35rem; font-weight: 600; letter-spacing: 0.04em; color: var(--off-white); text-decoration: none; transition: color 0.25s; }
+      #navOverlay a:hover { color: var(--accent); }
       .nav-mobile-cta {
         margin-top: 0.5rem;
-        background: var(--accent); color: var(--navy);
+        background: var(--accent); color: var(--navy) !important;
         padding: 0.75rem 2.5rem; border-radius: 10px;
         font-weight: 700; font-size: 1rem; text-decoration: none;
         transition: transform 0.2s, box-shadow 0.2s;
@@ -585,7 +593,6 @@
       <a href="#process">Processo</a>
       <a href="#about">Sobre</a>
       <a href="#contact">Contato</a>
-      <a href="#contact" class="nav-mobile-cta">Fale Conosco</a>
     </nav>
     <a href="#contact" class="nav-cta">Fale Conosco</a>
     <button class="nav-burger" id="navBurger" aria-label="Abrir menu" aria-expanded="false">
@@ -594,6 +601,15 @@
       <span></span>
     </button>
   </header>
+
+  <!-- Nav mobile overlay — fora do header para evitar containing block criado por backdrop-filter -->
+  <nav id="navOverlay">
+    <a href="#services">Serviços</a>
+    <a href="#process">Processo</a>
+    <a href="#about">Sobre</a>
+    <a href="#contact">Contato</a>
+    <a href="#contact" class="nav-mobile-cta">Fale Conosco</a>
+  </nav>
 
   <!-- ── Hero ── -->
   <section id="hero">
@@ -930,15 +946,15 @@
 
     /* ── Hamburger menu ── */
     const burger = document.getElementById('navBurger');
-    const navMenu = document.getElementById('navMenu');
+    const navOverlay = document.getElementById('navOverlay');
     function toggleMenu(open) {
       burger.classList.toggle('open', open);
-      navMenu.classList.toggle('open', open);
+      navOverlay.classList.toggle('open', open);
       burger.setAttribute('aria-expanded', open);
       document.body.style.overflow = open ? 'hidden' : '';
     }
-    burger.addEventListener('click', () => toggleMenu(!navMenu.classList.contains('open')));
-    navMenu.querySelectorAll('a').forEach(link => {
+    burger.addEventListener('click', () => toggleMenu(!navOverlay.classList.contains('open')));
+    navOverlay.querySelectorAll('a').forEach(link => {
       link.addEventListener('click', () => toggleMenu(false));
     });
     document.addEventListener('keydown', e => { if (e.key === 'Escape') toggleMenu(false); });

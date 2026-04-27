@@ -17,6 +17,17 @@ Cada entrada documenta:
 
 <!-- As entradas mais recentes ficam no topo -->
 
+## 2026-04-27 — Correção do hamburger menu (backdrop-filter containing block)
+
+- **Arquivo:** `index.html`
+- **Comportamento anterior:** O `<nav id="navMenu">` era filho do `<header id="navbar">`. Quando a página era rolada, o header recebia `backdrop-filter: blur(18px)`, o que criava um novo *containing block* para filhos com `position: fixed`. O `inset: 0` do nav passava a referenciar o header (altura ~70px) em vez da viewport, exibindo o menu apenas na faixa do topo com links cortados.
+- **Comportamento novo:**
+  - Criado `<nav id="navOverlay">` como **irmão do `<header>`**, fora do seu DOM — `position: fixed; inset: 0` referencia a viewport em qualquer posição de scroll
+  - `<nav id="navMenu">` (dentro do header) permanece para exibição desktop, ocultado no breakpoint ≤768px
+  - `#navbar` com `z-index: 1060` (acima do overlay 1050) — botão hamburger sempre clicável
+  - JS atualizado para togular `#navOverlay`
+- **Motivação:** Bug reportado pelo usuário — menu não abria corretamente ao rolar a página
+
 ## 2026-04-27 — Responsividade total (3 breakpoints + hamburger menu)
 
 - **Arquivo:** `index.html`
