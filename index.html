@@ -549,6 +549,23 @@
       transition: color 0.2s;
     }
     .modal-link-btn:hover { color: var(--white); }
+    .modal-or {
+      display: flex; align-items: center; gap: 0.75rem;
+      margin: 1.1rem 0 0.2rem; color: var(--muted); font-size: 0.78rem;
+    }
+    .modal-or::before, .modal-or::after {
+      content: ''; flex: 1; height: 1px; background: var(--border);
+    }
+    .btn-modal-secondary {
+      width: 100%; background: transparent;
+      border: 1.5px solid var(--border); color: var(--off-white);
+      padding: 0.82rem; border-radius: 10px;
+      font-family: 'Space Grotesk', sans-serif; font-size: 0.92rem; font-weight: 600;
+      cursor: pointer; margin-top: 0.5rem;
+      display: flex; align-items: center; justify-content: center; gap: 0.5rem;
+      transition: border-color 0.25s, color 0.25s, background 0.25s;
+    }
+    .btn-modal-secondary:hover { border-color: var(--accent); color: var(--accent); background: rgba(58,190,255,0.06); }
     .modal-support {
       margin-top: 1.4rem; padding-top: 1.2rem;
       border-top: 1px solid rgba(58,190,255,0.1);
@@ -1065,6 +1082,44 @@
           </button>
         </form>
         <button class="modal-link-btn" id="goForgot">Esqueci meu acesso</button>
+        <div class="modal-or">ou</div>
+        <button type="button" class="btn-modal-secondary" id="goParceria">
+          🤝 Solicitar Parceria
+        </button>
+      </div>
+
+      <!-- Painel: Solicitar Parceria -->
+      <div id="panelParceria" class="modal-panel">
+        <div class="modal-logo">
+          <img src="logo_HO2.png" alt="HyperOlimpo" />
+          <span>HyperOlimpo</span>
+        </div>
+        <h3>Solicitar Parceria</h3>
+        <p class="modal-subtitle">Informe seu e-mail e enviaremos o link para criar seu cadastro. Nossa equipe também será notificada.</p>
+        <div id="parceAlert" class="modal-alert error"></div>
+
+        <div id="parceFormWrap">
+          <form id="parceForm" novalidate>
+            <div class="modal-input-wrap">
+              <label for="parceEmail">Seu e-mail</label>
+              <input type="email" id="parceEmail" placeholder="seu@email.com" autocomplete="email" />
+            </div>
+            <button type="submit" class="btn-modal-submit" id="parceBtn">
+              <span id="parceBtnText">Enviar Link de Cadastro</span>
+            </button>
+          </form>
+          <p style="font-size:0.79rem;color:var(--muted);text-align:center;margin-top:1rem;line-height:1.65;">
+            Você receberá um e-mail de <strong style="color:var(--off-white)">atendimento@hyperolimpo.com.br</strong> com o link para preencher seus dados.
+          </p>
+        </div>
+
+        <div id="parceSuccess" class="modal-success-state" style="display:none;">
+          <div class="success-circle">✓</div>
+          <h4>Solicitação enviada!</h4>
+          <p>O link de cadastro foi enviado para seu e-mail.<br/>Nossa equipe já foi notificada e entrará em contato em breve!</p>
+        </div>
+
+        <button class="modal-link-btn" id="goLoginFromParce">← Voltar ao login</button>
       </div>
 
       <!-- Painel: Recuperar acesso -->
@@ -1114,6 +1169,9 @@
       <path d="M16 0C7.163 0 0 7.163 0 16c0 2.82.736 5.469 2.027 7.77L0 32l8.43-2.007A15.938 15.938 0 0016 32c8.837 0 16-7.163 16-16S24.837 0 16 0zm0 29.333a13.267 13.267 0 01-6.756-1.843l-.484-.287-5.007 1.193 1.22-4.877-.317-.502A13.267 13.267 0 012.667 16C2.667 8.636 8.636 2.667 16 2.667S29.333 8.636 29.333 16 23.364 29.333 16 29.333zm7.27-9.874c-.398-.2-2.355-1.162-2.72-1.295-.366-.133-.632-.2-.898.2-.266.398-1.03 1.295-1.263 1.561-.233.266-.465.3-.863.1-.398-.2-1.681-.62-3.202-1.977-1.183-1.057-1.982-2.362-2.214-2.76-.233-.398-.025-.613.175-.812.18-.178.398-.465.597-.698.2-.233.266-.398.398-.664.133-.266.067-.498-.033-.698-.1-.2-.898-2.163-1.23-2.96-.324-.778-.653-.672-.898-.685l-.765-.013c-.266 0-.698.1-1.064.498-.366.398-1.396 1.362-1.396 3.325s1.43 3.857 1.629 4.123c.2.266 2.814 4.297 6.817 6.025.953.411 1.696.657 2.275.841.956.304 1.826.261 2.514.158.767-.114 2.355-.963 2.688-1.893.333-.93.333-1.727.233-1.893-.1-.167-.366-.267-.764-.466z"/>
     </svg>
   </a>
+
+  <!-- EmailJS SDK — necessário para envio de e-mails pelo frontend -->
+  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 
   <script>
     /* ── Navbar scroll effect ── */
@@ -1238,9 +1296,28 @@
 
     /* ── Área do Cliente Modal ── */
     (function () {
-      const overlay    = document.getElementById('clientModal');
-      const panelLogin = document.getElementById('panelLogin');
-      const panelForgot= document.getElementById('panelForgot');
+      const overlay      = document.getElementById('clientModal');
+      const panelLogin   = document.getElementById('panelLogin');
+      const panelForgot  = document.getElementById('panelForgot');
+      const panelParceria= document.getElementById('panelParceria');
+
+      // ── Configurações EmailJS ──────────────────────────────────────────────
+      // 1. Crie conta gratuita em https://emailjs.com
+      // 2. Conecte seu serviço de e-mail (Gmail, Outlook, etc.)
+      // 3. Crie dois templates e substitua os IDs abaixo:
+      const EMAILJS_PUBLIC_KEY      = 'SEU_PUBLIC_KEY';
+      const EMAILJS_SERVICE_ID      = 'SEU_SERVICE_ID';
+      const EMAILJS_TPL_CLIENTE     = 'TPL_LINK_CADASTRO';   // envia link ao novo cliente
+      const EMAILJS_TPL_INTERNO     = 'TPL_NOTIF_INTERNA';   // notifica a equipe HyperOlimpo
+      // ── Configurações CallMeBot (WhatsApp gratuito) ───────────────────────
+      // 1. Salve o número +34 644 63 11 19 na agenda
+      // 2. Envie pelo WhatsApp: "I allow callmebot to send me messages"
+      // 3. Você receberá sua apikey — substitua abaixo:
+      const WA_NUMBER  = '5500000000000'; // número HyperOlimpo com DDI, sem +
+      const WA_APIKEY  = 'SUA_APIKEY_CALLMEBOT';
+      // ─────────────────────────────────────────────────────────────────────
+
+      function validEmail(v) { return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v); }
 
       function openModal() {
         overlay.classList.add('open');
@@ -1251,25 +1328,26 @@
         overlay.classList.remove('open');
         document.body.style.overflow = '';
         showPanel('login');
-        document.getElementById('loginForm').reset();
-        document.getElementById('forgotForm').reset();
-        setAlert('loginAlert', '', false);
-        setAlert('forgotAlert', '', false);
+        ['loginForm','forgotForm','parceForm'].forEach(id => document.getElementById(id).reset());
+        ['loginAlert','forgotAlert','parceAlert'].forEach(id => setAlert(id, '', false));
         document.getElementById('forgotSuccess').style.display = 'none';
         document.getElementById('forgotFormWrap').style.display = '';
+        document.getElementById('parceSuccess').style.display = 'none';
+        document.getElementById('parceFormWrap').style.display = '';
       }
       function showPanel(name) {
-        panelLogin.classList.toggle('active', name === 'login');
-        panelForgot.classList.toggle('active', name === 'forgot');
-        if (name === 'forgot') setTimeout(() => document.getElementById('recoveryEmail').focus(), 80);
+        panelLogin.classList.toggle('active',    name === 'login');
+        panelForgot.classList.toggle('active',   name === 'forgot');
+        panelParceria.classList.toggle('active', name === 'parceria');
+        const focusMap = { forgot: 'recoveryEmail', parceria: 'parceEmail' };
+        if (focusMap[name]) setTimeout(() => document.getElementById(focusMap[name]).focus(), 80);
       }
       function setAlert(id, msg, show) {
         const el = document.getElementById(id);
-        el.textContent = msg;
-        el.classList.toggle('show', show);
+        el.textContent = msg; el.classList.toggle('show', show);
       }
-      function setLoading(btn, txtId, loading, label) {
-        document.getElementById(btn).disabled = loading;
+      function setLoading(btnId, txtId, loading, label) {
+        document.getElementById(btnId).disabled = loading;
         document.getElementById(txtId).textContent = loading ? 'Aguarde...' : label;
       }
 
@@ -1282,8 +1360,10 @@
         el.addEventListener('click', e => { e.preventDefault(); openModal(); })
       );
 
-      document.getElementById('goForgot').addEventListener('click', () => showPanel('forgot'));
-      document.getElementById('goLogin').addEventListener('click',  () => showPanel('login'));
+      document.getElementById('goForgot').addEventListener('click',        () => showPanel('forgot'));
+      document.getElementById('goLogin').addEventListener('click',          () => showPanel('login'));
+      document.getElementById('goParceria').addEventListener('click',       () => showPanel('parceria'));
+      document.getElementById('goLoginFromParce').addEventListener('click', () => showPanel('login'));
 
       /* ── Login ── */
       document.getElementById('loginForm').addEventListener('submit', e => {
@@ -1291,11 +1371,7 @@
         const email = document.getElementById('loginEmail').value.trim();
         const pass  = document.getElementById('loginPassword').value;
         setAlert('loginAlert', '', false);
-
-        if (!email || !pass) {
-          setAlert('loginAlert', 'Preencha e-mail e senha.', true);
-          return;
-        }
+        if (!email || !pass) { setAlert('loginAlert', 'Preencha e-mail e senha.', true); return; }
         setLoading('loginBtn', 'loginBtnText', true);
         // TODO: substituir pelo endpoint de autenticação (Firebase Auth / Supabase / API própria)
         setTimeout(() => {
@@ -1309,19 +1385,59 @@
         e.preventDefault();
         const email = document.getElementById('recoveryEmail').value.trim();
         setAlert('forgotAlert', '', false);
-
-        if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-          setAlert('forgotAlert', 'Informe um e-mail válido.', true);
-          return;
-        }
+        if (!validEmail(email)) { setAlert('forgotAlert', 'Informe um e-mail válido.', true); return; }
         setLoading('forgotBtn', 'forgotBtnText', true);
-        // TODO: chamar POST /api/recovery { email }
-        // O backend valida se o e-mail existe na base e envia o link via atendimento@hyperolimpo.com.br
+        // TODO: chamar POST /api/recovery { email } — backend valida e envia via atendimento@hyperolimpo.com.br
         setTimeout(() => {
           setLoading('forgotBtn', 'forgotBtnText', false, 'Enviar Link de Recuperação');
           document.getElementById('forgotFormWrap').style.display = 'none';
           document.getElementById('forgotSuccess').style.display = 'block';
         }, 1400);
+      });
+
+      /* ── Solicitar Parceria ── */
+      document.getElementById('parceForm').addEventListener('submit', async e => {
+        e.preventDefault();
+        const email = document.getElementById('parceEmail').value.trim();
+        setAlert('parceAlert', '', false);
+        if (!validEmail(email)) { setAlert('parceAlert', 'Informe um e-mail válido.', true); return; }
+
+        setLoading('parceBtn', 'parceBtnText', true);
+
+        const cadastroUrl = `${location.origin}/cadastro-cliente.html`;
+        const agora = new Date().toLocaleString('pt-BR', { timeZone: 'America/Sao_Paulo' });
+
+        try {
+          // 1 — E-mail ao novo cliente com o link de cadastro
+          await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TPL_CLIENTE, {
+            to_email:      email,
+            cadastro_url:  cadastroUrl,
+            reply_to:      'atendimento@hyperolimpo.com.br'
+          }, EMAILJS_PUBLIC_KEY);
+
+          // 2 — E-mail interno de notificação para a equipe
+          await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TPL_INTERNO, {
+            cliente_email: email,
+            data_hora:     agora,
+            cadastro_url:  cadastroUrl
+          }, EMAILJS_PUBLIC_KEY);
+
+          // 3 — Notificação WhatsApp via CallMeBot
+          const waMsg = encodeURIComponent(
+            `🔔 *Novo cliente solicitando parceria!*\n📧 E-mail: ${email}\n🕐 ${agora}\n🔗 Cadastro: ${cadastroUrl}`
+          );
+          await fetch(`https://api.callmebot.com/whatsapp.php?phone=${WA_NUMBER}&text=${waMsg}&apikey=${WA_APIKEY}`)
+            .catch(() => {}); // falha silenciosa se não configurado
+
+          setLoading('parceBtn', 'parceBtnText', false, 'Enviar Link de Cadastro');
+          document.getElementById('parceFormWrap').style.display = 'none';
+          document.getElementById('parceSuccess').style.display  = 'block';
+
+        } catch (err) {
+          setLoading('parceBtn', 'parceBtnText', false, 'Enviar Link de Cadastro');
+          setAlert('parceAlert',
+            'Erro ao enviar. Configure o EmailJS ou entre em contato pelo WhatsApp.', true);
+        }
       });
     })();
 

@@ -17,6 +17,27 @@ Cada entrada documenta:
 
 <!-- As entradas mais recentes ficam no topo -->
 
+## 2026-04-27 — Fluxo "Solicitar Parceria" na pop-up de login
+
+- **Arquivo:** `index.html`
+- **Comportamento anterior:** Pop-up de login com dois painéis (login e recuperação de acesso). Sem forma de novos clientes solicitarem cadastro.
+- **Comportamento novo:**
+  - Botão "🤝 Solicitar Parceria" adicionado ao painel de login, separado por divisor "ou"
+  - Novo **painel Parceria** (3º painel no modal): campo de e-mail + botão "Enviar Link de Cadastro" + estado de sucesso
+  - Navegação bidirecional entre todos os painéis (login ↔ forgot ↔ parceria)
+  - Ao submeter o e-mail no painel Parceria, 3 ações ocorrem:
+    1. **EmailJS** envia e-mail ao cliente com link direto para `cadastro-cliente.html`
+    2. **EmailJS** envia notificação interna para a equipe HyperOlimpo
+    3. **CallMeBot API** envia mensagem automática no WhatsApp da HyperOlimpo com e-mail do cliente, horário e link
+  - SDK EmailJS carregado via CDN (`@emailjs/browser@4`)
+  - Configurações com constantes comentadas no topo do bloco JS (PUBLIC_KEY, SERVICE_ID, template IDs, WA_NUMBER, WA_APIKEY)
+  - Falha do WhatsApp é silenciosa (`.catch(() => {})`) para não bloquear o fluxo
+  - CSS: `.modal-or` (separador), `.btn-modal-secondary` (botão estilo secundário)
+- **Pendente de configuração:**
+  - Conta EmailJS com dois templates (cliente + interno)
+  - Registro no CallMeBot para obter apikey do WhatsApp
+- **Motivação:** Solicitação do usuário para fluxo de cadastro de novos clientes com notificação automática por e-mail e WhatsApp
+
 ## 2026-04-27 — Página de cadastro de clientes (PF e PJ)
 
 - **Arquivo:** `cadastro-cliente.html` (novo)

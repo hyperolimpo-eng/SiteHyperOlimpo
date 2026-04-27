@@ -30,6 +30,12 @@ Documentação do projeto e registro de ações executadas pelo assistente.
 
 <!-- As entradas mais recentes ficam no topo -->
 
+### 2026-04-27 — Fluxo "Solicitar Parceria" na pop-up de login
+- Botão "Solicitar Parceria" no painel de login com separador "ou"
+- 3º painel no modal: e-mail → envia link de cadastro ao cliente (EmailJS) + notificação interna (EmailJS) + WhatsApp automático (CallMeBot API)
+- Pendente: configurar EmailJS e CallMeBot com chaves reais
+- Motivação: solicitação do usuário
+
 ### 2026-04-27 — Página de cadastro de clientes PF e PJ
 - Novo arquivo `cadastro-cliente.html` com 6 seções, toggle PF/PJ, masks, busca de CEP via ViaCEP
 - Validação frontend, barra de força de senha, overlay de sucesso personalizado
