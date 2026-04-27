@@ -17,6 +17,26 @@ Cada entrada documenta:
 
 <!-- As entradas mais recentes ficam no topo -->
 
+## 2026-04-27 — Página de cadastro de clientes (PF e PJ)
+
+- **Arquivo:** `cadastro-cliente.html` (novo)
+- **Comportamento anterior:** Sem página de cadastro.
+- **Comportamento novo:**
+  - Toggle Pessoa Física / Pessoa Jurídica no topo — mostra/oculta seções relevantes dinamicamente
+  - **Seção 1 (PJ):** Razão Social, Nome Fantasia, CNPJ, Inscrição Estadual e Municipal, Data de Abertura, Natureza Jurídica, Porte, Ramo de Atividade, Site
+  - **Seção Dados Pessoais / Responsável:** Nome, CPF, RG, Órgão Emissor, Data de Nascimento, Estado Civil, Gênero, Profissão, Nacionalidade (PF) / Cargo (PJ)
+  - **Seção Contato:** E-mail principal e secundário, Celular/WhatsApp, Telefone Fixo, LinkedIn, Instagram, horário de atendimento preferencial (checkboxes)
+  - **Seção Endereço:** CEP com busca automática via API ViaCEP, Logradouro, Número, Complemento, Bairro, Cidade, Estado, País
+  - **Seção Interesse:** Checkboxes de serviços, origem, orçamento estimado, descrição do projeto, observações
+  - **Seção Acesso:** Senha + confirmar senha com toggle de visibilidade e barra de força de senha (5 níveis com cores)
+  - Masks de entrada: CPF, CNPJ, CEP, celular, telefone fixo, data
+  - Validação frontend com highlight de campos inválidos e scroll automático ao primeiro erro
+  - Overlay de sucesso com nome personalizado pós-envio
+  - Topbar com logo + link "Voltar ao site"; `noindex, nofollow` nas meta tags
+  - Design 100% consistente com o site principal (mesmo sistema de cores, tipografia, cards)
+  - Backend pendente: submissão do formulário precisa de API / Firebase / Supabase (TODO no JS)
+- **Motivação:** Solicitação do usuário para página profissional de cadastro PF e PJ
+
 ## 2026-04-27 — Área do Cliente: modal de login e recuperação de acesso
 
 - **Arquivo:** `index.html`

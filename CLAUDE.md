@@ -30,6 +30,12 @@ Documentação do projeto e registro de ações executadas pelo assistente.
 
 <!-- As entradas mais recentes ficam no topo -->
 
+### 2026-04-27 — Página de cadastro de clientes PF e PJ
+- Novo arquivo `cadastro-cliente.html` com 6 seções, toggle PF/PJ, masks, busca de CEP via ViaCEP
+- Validação frontend, barra de força de senha, overlay de sucesso personalizado
+- Design consistente com o site; backend de submissão pendente (TODO marcado)
+- Motivação: solicitação do usuário
+
 ### 2026-04-27 — Área do Cliente: modal de login e recuperação de acesso
 - Link "Área do Cliente" no menu desktop e mobile com estilo diferenciado
 - Modal com dois painéis: login (email + senha) e recuperação de acesso (email + suporte)
