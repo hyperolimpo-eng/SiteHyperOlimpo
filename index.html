@@ -463,6 +463,112 @@
     }
     .wa-float:hover .wa-tooltip { opacity: 1; }
 
+    /* ── Área do Cliente — nav link ── */
+    .nav-client-link {
+      color: var(--accent) !important;
+      border: 1px solid rgba(58,190,255,0.32) !important;
+      padding: 0.28rem 0.8rem !important;
+      border-radius: 6px;
+      transition: background 0.2s, border-color 0.2s !important;
+    }
+    .nav-client-link:hover { background: rgba(58,190,255,0.1) !important; border-color: var(--accent) !important; }
+    .nav-client-link::after { display: none !important; }
+
+    /* ── Área do Cliente — Modal ── */
+    .modal-overlay {
+      position: fixed; inset: 0; z-index: 2000;
+      background: rgba(5,12,25,0.88);
+      backdrop-filter: blur(14px);
+      display: flex; align-items: center; justify-content: center;
+      padding: 1.5rem;
+      opacity: 0; pointer-events: none;
+      transition: opacity 0.35s cubic-bezier(.16,1,.3,1);
+    }
+    .modal-overlay.open { opacity: 1; pointer-events: all; }
+    .modal-card {
+      background: var(--navy-mid);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 2.5rem;
+      width: 100%; max-width: 440px;
+      position: relative;
+      box-shadow: 0 32px 80px rgba(0,0,0,0.55), 0 0 0 1px rgba(58,190,255,0.08);
+      transform: translateY(22px) scale(0.97);
+      opacity: 0;
+      transition: transform 0.4s cubic-bezier(.16,1,.3,1), opacity 0.4s;
+    }
+    .modal-overlay.open .modal-card { transform: translateY(0) scale(1); opacity: 1; }
+    .modal-close {
+      position: absolute; top: 1.2rem; right: 1.2rem;
+      width: 32px; height: 32px; border-radius: 50%;
+      background: rgba(58,190,255,0.08); border: 1px solid var(--border);
+      color: var(--muted); font-size: 1rem; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      transition: background 0.2s, color 0.2s, border-color 0.2s;
+    }
+    .modal-close:hover { background: rgba(58,190,255,0.18); color: var(--white); border-color: rgba(58,190,255,0.4); }
+    .modal-logo { display: flex; align-items: center; gap: 0.65rem; margin-bottom: 1.6rem; }
+    .modal-logo img { width: 36px; height: 36px; border-radius: 50%; }
+    .modal-logo span { font-family: 'Space Grotesk', sans-serif; font-weight: 700; font-size: 1rem; color: var(--white); }
+    .modal-card h3 { font-size: 1.45rem; margin-bottom: 0.35rem; }
+    .modal-subtitle { font-size: 0.88rem; color: var(--muted); margin-bottom: 1.6rem; line-height: 1.5; }
+    .modal-panel { display: none; }
+    .modal-panel.active { display: block; }
+    .modal-alert {
+      padding: 0.75rem 1rem; border-radius: 8px; margin-bottom: 1rem;
+      font-size: 0.85rem; display: none;
+    }
+    .modal-alert.error  { background: rgba(239,68,68,0.12);  border: 1px solid rgba(239,68,68,0.3);  color: #fca5a5; }
+    .modal-alert.success{ background: rgba(34,197,94,0.12);  border: 1px solid rgba(34,197,94,0.3);  color: #86efac; }
+    .modal-alert.show   { display: block; }
+    .modal-input-wrap { margin-bottom: 1rem; }
+    .modal-input-wrap label { display: block; font-size: 0.78rem; font-weight: 600; color: var(--muted); letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 0.45rem; }
+    .modal-input-wrap input {
+      width: 100%; background: rgba(10,22,40,0.7); border: 1.5px solid var(--border);
+      border-radius: 9px; padding: 0.85rem 1rem; color: var(--white);
+      font-family: 'Inter', sans-serif; font-size: 0.92rem; outline: none;
+      transition: border-color 0.25s, box-shadow 0.25s;
+    }
+    .modal-input-wrap input::placeholder { color: var(--muted); }
+    .modal-input-wrap input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(58,190,255,0.12); }
+    .modal-input-wrap input.field-error { border-color: rgba(239,68,68,0.6); }
+    .btn-modal-submit {
+      width: 100%; background: var(--accent); color: var(--navy);
+      border: none; padding: 0.9rem; border-radius: 10px;
+      font-family: 'Space Grotesk', sans-serif; font-size: 0.95rem; font-weight: 700;
+      cursor: pointer; margin-top: 0.5rem;
+      display: flex; align-items: center; justify-content: center; gap: 0.5rem;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .btn-modal-submit:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(58,190,255,0.4); }
+    .btn-modal-submit:disabled { opacity: 0.6; cursor: not-allowed; }
+    .modal-link-btn {
+      background: none; border: none; color: var(--accent); cursor: pointer;
+      font-size: 0.85rem; font-weight: 500; padding: 0;
+      margin-top: 1.1rem; display: block; width: 100%; text-align: center;
+      transition: color 0.2s;
+    }
+    .modal-link-btn:hover { color: var(--white); }
+    .modal-support {
+      margin-top: 1.4rem; padding-top: 1.2rem;
+      border-top: 1px solid rgba(58,190,255,0.1);
+      text-align: center; font-size: 0.82rem; color: var(--muted); line-height: 1.9;
+    }
+    .modal-support strong { display: block; font-size: 0.84rem; color: var(--off-white); margin-bottom: 0.2rem; }
+    .modal-support a { color: var(--accent); text-decoration: none; font-weight: 600; }
+    .modal-support a:hover { text-decoration: underline; }
+    .modal-success-state { text-align: center; padding: 0.5rem 0 0.8rem; }
+    .success-circle {
+      width: 64px; height: 64px; border-radius: 50%; margin: 0 auto 1.2rem;
+      background: rgba(34,197,94,0.12); border: 1.5px solid rgba(34,197,94,0.35);
+      display: flex; align-items: center; justify-content: center; font-size: 1.8rem;
+    }
+    .modal-success-state h4 { font-size: 1.1rem; color: var(--white); margin-bottom: 0.5rem; }
+    .modal-success-state p { font-size: 0.88rem; color: var(--muted); line-height: 1.6; }
+    @media (max-width: 480px) {
+      .modal-card { padding: 2rem 1.5rem; }
+    }
+
     /* ── Hamburger Button ── */
     .nav-burger {
       display: none;
@@ -593,6 +699,7 @@
       <a href="#process">Processo</a>
       <a href="#about">Sobre</a>
       <a href="#contact">Contato</a>
+      <a href="#" class="nav-client-link open-client-modal">Área do Cliente</a>
     </nav>
     <a href="#contact" class="nav-cta">Fale Conosco</a>
     <button class="nav-burger" id="navBurger" aria-label="Abrir menu" aria-expanded="false">
@@ -608,6 +715,7 @@
     <a href="#process">Processo</a>
     <a href="#about">Sobre</a>
     <a href="#contact">Contato</a>
+    <a href="#" class="nav-client-link open-client-modal">Área do Cliente</a>
     <a href="#contact" class="nav-mobile-cta">Fale Conosco</a>
   </nav>
 
@@ -929,6 +1037,76 @@
     </div>
   </footer>
 
+  <!-- ── Área do Cliente Modal ── -->
+  <div id="clientModal" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <div class="modal-card">
+      <button class="modal-close" id="modalClose" aria-label="Fechar">✕</button>
+
+      <!-- Painel: Login -->
+      <div id="panelLogin" class="modal-panel active">
+        <div class="modal-logo">
+          <img src="logo_HO2.png" alt="HyperOlimpo" />
+          <span>HyperOlimpo</span>
+        </div>
+        <h3 id="modalTitle">Área do Cliente</h3>
+        <p class="modal-subtitle">Acesse sua conta para acompanhar seus projetos.</p>
+        <div id="loginAlert" class="modal-alert error"></div>
+        <form id="loginForm" novalidate>
+          <div class="modal-input-wrap">
+            <label for="loginEmail">E-mail</label>
+            <input type="email" id="loginEmail" placeholder="seu@email.com" autocomplete="email" />
+          </div>
+          <div class="modal-input-wrap">
+            <label for="loginPassword">Senha</label>
+            <input type="password" id="loginPassword" placeholder="••••••••" autocomplete="current-password" />
+          </div>
+          <button type="submit" class="btn-modal-submit" id="loginBtn">
+            <span id="loginBtnText">Entrar</span>
+          </button>
+        </form>
+        <button class="modal-link-btn" id="goForgot">Esqueci meu acesso</button>
+      </div>
+
+      <!-- Painel: Recuperar acesso -->
+      <div id="panelForgot" class="modal-panel">
+        <div class="modal-logo">
+          <img src="logo_HO2.png" alt="HyperOlimpo" />
+          <span>HyperOlimpo</span>
+        </div>
+        <h3>Recuperar Acesso</h3>
+        <p class="modal-subtitle">Informe o e-mail cadastrado e enviaremos as instruções de recuperação.</p>
+        <div id="forgotAlert" class="modal-alert error"></div>
+
+        <div id="forgotFormWrap">
+          <form id="forgotForm" novalidate>
+            <div class="modal-input-wrap">
+              <label for="recoveryEmail">E-mail cadastrado</label>
+              <input type="email" id="recoveryEmail" placeholder="seu@email.com" autocomplete="email" />
+            </div>
+            <button type="submit" class="btn-modal-submit" id="forgotBtn">
+              <span id="forgotBtnText">Enviar Link de Recuperação</span>
+            </button>
+          </form>
+          <div class="modal-support">
+            <strong>Esqueci meu acesso</strong>
+            Ainda com dificuldades? Fale com o suporte:<br/>
+            <a href="mailto:atendimento@hyperolimpo.com.br">atendimento@hyperolimpo.com.br</a>
+            &nbsp;·&nbsp;
+            <a href="https://wa.me/5500000000000" target="_blank" rel="noopener noreferrer">WhatsApp</a>
+          </div>
+        </div>
+
+        <div id="forgotSuccess" class="modal-success-state" style="display:none;">
+          <div class="success-circle">✓</div>
+          <h4>E-mail enviado!</h4>
+          <p>Se este endereço fizer parte da nossa base de clientes, você receberá o link de recuperação em instantes.<br/><br/>Não recebeu? Verifique sua caixa de spam ou entre em contato com o suporte.</p>
+        </div>
+
+        <button class="modal-link-btn" id="goLogin">← Voltar ao login</button>
+      </div>
+    </div>
+  </div>
+
   <!-- ── WhatsApp Float Button ── -->
   <a href="https://wa.me/5500000000000" class="wa-float" target="_blank" rel="noopener noreferrer" aria-label="Fale conosco pelo WhatsApp">
     <span class="wa-tooltip">Fale conosco!</span>
@@ -1057,6 +1235,95 @@
       const y = window.scrollY;
       if (heroGrid) heroGrid.style.transform = `translateY(${y * 0.3}px)`;
     });
+
+    /* ── Área do Cliente Modal ── */
+    (function () {
+      const overlay    = document.getElementById('clientModal');
+      const panelLogin = document.getElementById('panelLogin');
+      const panelForgot= document.getElementById('panelForgot');
+
+      function openModal() {
+        overlay.classList.add('open');
+        document.body.style.overflow = 'hidden';
+        setTimeout(() => document.getElementById('loginEmail').focus(), 120);
+      }
+      function closeModal() {
+        overlay.classList.remove('open');
+        document.body.style.overflow = '';
+        showPanel('login');
+        document.getElementById('loginForm').reset();
+        document.getElementById('forgotForm').reset();
+        setAlert('loginAlert', '', false);
+        setAlert('forgotAlert', '', false);
+        document.getElementById('forgotSuccess').style.display = 'none';
+        document.getElementById('forgotFormWrap').style.display = '';
+      }
+      function showPanel(name) {
+        panelLogin.classList.toggle('active', name === 'login');
+        panelForgot.classList.toggle('active', name === 'forgot');
+        if (name === 'forgot') setTimeout(() => document.getElementById('recoveryEmail').focus(), 80);
+      }
+      function setAlert(id, msg, show) {
+        const el = document.getElementById(id);
+        el.textContent = msg;
+        el.classList.toggle('show', show);
+      }
+      function setLoading(btn, txtId, loading, label) {
+        document.getElementById(btn).disabled = loading;
+        document.getElementById(txtId).textContent = loading ? 'Aguarde...' : label;
+      }
+
+      document.getElementById('modalClose').addEventListener('click', closeModal);
+      overlay.addEventListener('click', e => { if (e.target === overlay) closeModal(); });
+      document.addEventListener('keydown', e => {
+        if (e.key === 'Escape' && overlay.classList.contains('open')) closeModal();
+      });
+      document.querySelectorAll('.open-client-modal').forEach(el =>
+        el.addEventListener('click', e => { e.preventDefault(); openModal(); })
+      );
+
+      document.getElementById('goForgot').addEventListener('click', () => showPanel('forgot'));
+      document.getElementById('goLogin').addEventListener('click',  () => showPanel('login'));
+
+      /* ── Login ── */
+      document.getElementById('loginForm').addEventListener('submit', e => {
+        e.preventDefault();
+        const email = document.getElementById('loginEmail').value.trim();
+        const pass  = document.getElementById('loginPassword').value;
+        setAlert('loginAlert', '', false);
+
+        if (!email || !pass) {
+          setAlert('loginAlert', 'Preencha e-mail e senha.', true);
+          return;
+        }
+        setLoading('loginBtn', 'loginBtnText', true);
+        // TODO: substituir pelo endpoint de autenticação (Firebase Auth / Supabase / API própria)
+        setTimeout(() => {
+          setLoading('loginBtn', 'loginBtnText', false, 'Entrar');
+          setAlert('loginAlert', 'E-mail ou senha incorretos. Verifique suas credenciais.', true);
+        }, 1400);
+      });
+
+      /* ── Recuperar acesso ── */
+      document.getElementById('forgotForm').addEventListener('submit', e => {
+        e.preventDefault();
+        const email = document.getElementById('recoveryEmail').value.trim();
+        setAlert('forgotAlert', '', false);
+
+        if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+          setAlert('forgotAlert', 'Informe um e-mail válido.', true);
+          return;
+        }
+        setLoading('forgotBtn', 'forgotBtnText', true);
+        // TODO: chamar POST /api/recovery { email }
+        // O backend valida se o e-mail existe na base e envia o link via atendimento@hyperolimpo.com.br
+        setTimeout(() => {
+          setLoading('forgotBtn', 'forgotBtnText', false, 'Enviar Link de Recuperação');
+          document.getElementById('forgotFormWrap').style.display = 'none';
+          document.getElementById('forgotSuccess').style.display = 'block';
+        }, 1400);
+      });
+    })();
 
     /* ── Form submit ── */
     function handleSubmit(e) {

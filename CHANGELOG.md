@@ -17,6 +17,20 @@ Cada entrada documenta:
 
 <!-- As entradas mais recentes ficam no topo -->
 
+## 2026-04-27 — Área do Cliente: modal de login e recuperação de acesso
+
+- **Arquivo:** `index.html`
+- **Comportamento anterior:** Sem área do cliente. Nenhum link de acesso no menu.
+- **Comportamento novo:**
+  - Link "Área do Cliente" adicionado ao `#navMenu` (desktop) e `#navOverlay` (mobile), com estilo visual diferenciado (borda + cor accent)
+  - Modal fullscreen com `backdrop-filter: blur` e animação de entrada (scale + translateY)
+  - **Painel 1 — Login:** campos e-mail e senha, botão "Entrar", estado de carregamento, mensagem de erro, link "Esqueci meu acesso"
+  - **Painel 2 — Recuperar Acesso:** campo de e-mail, botão com estado de carregamento, links de suporte (e-mail `atendimento@hyperolimpo.com.br` e WhatsApp), estado de sucesso com ícone e mensagem
+  - Modal fecha ao clicar no overlay, no botão ✕ ou pressionar Esc; body scroll bloqueado quando aberto
+  - Validação de e-mail via regex no frontend
+  - **Integração de backend pendente:** autenticação (login) e envio de e-mail de recuperação precisam de API/Firebase/Supabase — pontos `TODO` marcados no código
+- **Motivação:** Solicitação do usuário para adicionar acesso à área do cliente com fluxo de login e recuperação de senha
+
 ## 2026-04-27 — Correção do hamburger menu (backdrop-filter containing block)
 
 - **Arquivo:** `index.html`

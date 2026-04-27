@@ -30,6 +30,13 @@ Documentação do projeto e registro de ações executadas pelo assistente.
 
 <!-- As entradas mais recentes ficam no topo -->
 
+### 2026-04-27 — Área do Cliente: modal de login e recuperação de acesso
+- Link "Área do Cliente" no menu desktop e mobile com estilo diferenciado
+- Modal com dois painéis: login (email + senha) e recuperação de acesso (email + suporte)
+- Validação frontend, estados de carregamento e sucesso, acessibilidade (Esc, aria)
+- Backend pendente: autenticação e envio de e-mail via atendimento@hyperolimpo.com.br — TODOs marcados no JS
+- Motivação: solicitação do usuário
+
 ### 2026-04-27 — Correção do hamburger menu (backdrop-filter containing block)
 - Bug: `backdrop-filter` no header criava containing block para `position:fixed` do nav filho, quebrando o overlay ao rolar
 - Fix: `<nav id="navOverlay">` movido para fora do header (irmão); `#navMenu` permanece no header para desktop
