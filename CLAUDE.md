@@ -30,6 +30,12 @@ Documentação do projeto e registro de ações executadas pelo assistente.
 
 <!-- As entradas mais recentes ficam no topo -->
 
+### 2026-04-27 — Responsividade total (3 breakpoints + hamburger menu)
+- Adicionados breakpoints: ≤1024px (tablet grande), ≤768px (tablet/mobile), ≤480px (mobile pequeno)
+- Hamburger menu com overlay fullscreen, animação de X, fechamento por link/Esc, bloqueio de scroll
+- Ajustes de grid, padding, tipografia e orbit em cada breakpoint
+- Motivação: solicitação do usuário para responsividade 100% em todas as plataformas
+
 ### 2026-04-27 — Botão flutuante de WhatsApp
 - Adicionado botão circular fixo no canto inferior direito com ícone SVG do WhatsApp
 - Animação de pulso contínua, tooltip ao hover, responsivo em mobile

@@ -17,6 +17,20 @@ Cada entrada documenta:
 
 <!-- As entradas mais recentes ficam no topo -->
 
+## 2026-04-27 — Responsividade total (3 breakpoints + hamburger menu)
+
+- **Arquivo:** `index.html`
+- **Comportamento anterior:** Apenas um media query `max-width: 768px` que ocultava o `<nav>` sem oferecer alternativa de navegação mobile. Sem breakpoint para tablet ou mobile pequeno. Sem hamburger menu.
+- **Comportamento novo:**
+  - **Hamburger menu:** botão com 3 barras animadas para X ao abrir; nav vira overlay fullscreen com blur e fade; fecha ao clicar em link, botão ou tecla Esc; bloqueia scroll do body quando aberto
+  - **Breakpoint ≤ 1024px (tablet grande):** grids de serviços e diferenciais ajustados para 2 colunas, gaps reduzidos
+  - **Breakpoint ≤ 768px (tablet/mobile):** hero com padding reduzido e botões em coluna; seções com padding menor; stats em 2×2; serviços em 1 coluna; processo em 2×2; about empilhado com orbital menor; diferenciais em 2 colunas; contato empilhado; footer empilhado e centralizado
+  - **Breakpoint ≤ 480px (mobile pequeno):** processo e diferenciais em 1 coluna; footer-links em coluna; hero-scroll oculto; padding mínimo
+  - `body { overflow: hidden }` bloqueado enquanto menu mobile está aberto
+  - `aria-expanded` no botão hamburger para acessibilidade
+  - Suporte a `100svh` no hero para mobile com barra de navegador do browser
+- **Motivação:** Solicitação do usuário para tornar o site 100% responsivo em todas as plataformas
+
 ## 2026-04-27 — Botão flutuante de WhatsApp
 
 - **Arquivo:** `index.html`
