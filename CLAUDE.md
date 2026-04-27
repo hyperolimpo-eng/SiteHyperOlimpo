@@ -30,6 +30,12 @@ Documentação do projeto e registro de ações executadas pelo assistente.
 
 <!-- As entradas mais recentes ficam no topo -->
 
+### 2026-04-27 — Botão flutuante de WhatsApp
+- Adicionado botão circular fixo no canto inferior direito com ícone SVG do WhatsApp
+- Animação de pulso contínua, tooltip ao hover, responsivo em mobile
+- Número atual é placeholder (`5500000000000`) — substituir pelo número real
+- Motivação: acesso rápido ao WhatsApp em qualquer ponto da navegação
+
 ### 2026-04-27 — Implementação de SEO completo no index.html
 - Adicionadas meta tags (description, keywords, robots, canonical)
 - Adicionadas tags Open Graph e Twitter Card para compartilhamento social

@@ -17,6 +17,21 @@ Cada entrada documenta:
 
 <!-- As entradas mais recentes ficam no topo -->
 
+## 2026-04-27 — Botão flutuante de WhatsApp
+
+- **Arquivo:** `index.html`
+- **Comportamento anterior:** Nenhum botão de acesso rápido ao WhatsApp; o único link estava na seção de contato, inacessível durante a navegação.
+- **Comportamento novo:**
+  - Botão circular fixo (`position: fixed`) no canto inferior direito, acompanha a rolagem em toda a página
+  - Ícone SVG oficial do WhatsApp com fundo verde (`#25D366`)
+  - Animação de pulso (`wa-pulse`) em anel ao redor do botão para chamar atenção
+  - Efeito hover: escala + sombra ampliada
+  - Tooltip "Fale conosco!" exibido ao passar o mouse (oculto em mobile)
+  - Link `https://wa.me/5500000000000` abre conversa direta (número placeholder — substituir pelo real)
+  - `target="_blank" rel="noopener noreferrer"` para segurança
+  - Responsivo: tamanho reduzido em telas menores que 768px, tooltip ocultado
+- **Motivação:** Facilitar o contato imediato pelo WhatsApp a qualquer momento da navegação
+
 ## 2026-04-27 — Implementação de SEO completo
 
 - **Arquivo:** `index.html`
