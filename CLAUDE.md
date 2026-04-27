@@ -30,6 +30,25 @@ Documentação do projeto e registro de ações executadas pelo assistente.
 
 <!-- As entradas mais recentes ficam no topo -->
 
+### 2026-04-27 — Fluxo "Solicitar Parceria" na pop-up de login
+- Botão "Solicitar Parceria" no painel de login com separador "ou"
+- 3º painel no modal: e-mail → envia link de cadastro ao cliente (EmailJS) + notificação interna (EmailJS) + WhatsApp automático (CallMeBot API)
+- Pendente: configurar EmailJS e CallMeBot com chaves reais
+- Motivação: solicitação do usuário
+
+### 2026-04-27 — Página de cadastro de clientes PF e PJ
+- Novo arquivo `cadastro-cliente.html` com 6 seções, toggle PF/PJ, masks, busca de CEP via ViaCEP
+- Validação frontend, barra de força de senha, overlay de sucesso personalizado
+- Design consistente com o site; backend de submissão pendente (TODO marcado)
+- Motivação: solicitação do usuário
+
+### 2026-04-27 — Área do Cliente: modal de login e recuperação de acesso
+- Link "Área do Cliente" no menu desktop e mobile com estilo diferenciado
+- Modal com dois painéis: login (email + senha) e recuperação de acesso (email + suporte)
+- Validação frontend, estados de carregamento e sucesso, acessibilidade (Esc, aria)
+- Backend pendente: autenticação e envio de e-mail via atendimento@hyperolimpo.com.br — TODOs marcados no JS
+- Motivação: solicitação do usuário
+
 ### 2026-04-27 — Correção do hamburger menu (backdrop-filter containing block)
 - Bug: `backdrop-filter` no header criava containing block para `position:fixed` do nav filho, quebrando o overlay ao rolar
 - Fix: `<nav id="navOverlay">` movido para fora do header (irmão); `#navMenu` permanece no header para desktop

@@ -17,6 +17,82 @@ Cada entrada documenta:
 
 <!-- As entradas mais recentes ficam no topo -->
 
+## 2026-04-27 — Integração completa com Supabase (banco de dados e autenticação)
+
+- **Arquivos:** `supabase-config.js` (novo), `schema.sql` (novo), `reset-password.html` (novo), `index.html`, `cadastro-cliente.html`
+- **Comportamento anterior:** Todos os formulários eram fake (sem backend). Login, recuperação de senha, contato e cadastro não persistiam dados.
+- **Comportamento novo:**
+  - **`supabase-config.js`:** Inicializa cliente Supabase global (`db`) com URL e anon key. Carregado por todas as páginas.
+  - **`schema.sql`:** Esquema completo do banco com tabelas `clientes`, `contatos` e `solicitacoes_parceria`. RLS habilitado: insert público para todas; select/update próprio para clientes via `auth.uid() = user_id`. Trigger `update_updated_at` na tabela clientes.
+  - **`reset-password.html`:** Página de redefinição de senha. Detecta evento `PASSWORD_RECOVERY` via `db.auth.onAuthStateChange()` e chama `db.auth.updateUser({ password })`.
+  - **`index.html` — Formulário de contato:** `handleSubmit` agora é `async`; salva no Supabase `db.from('contatos').insert({...})` com todos os campos com `name` attribute.
+  - **`index.html` — Login:** Usa `db.auth.signInWithPassword({ email, password })`.
+  - **`index.html` — Recuperar acesso:** Usa `db.auth.resetPasswordForEmail(email, { redirectTo: .../reset-password.html })`.
+  - **`index.html` — Solicitar Parceria:** Salva e-mail em `db.from('solicitacoes_parceria').insert({ email })` antes de enviar EmailJS e CallMeBot.
+  - **`cadastro-cliente.html`:** Submit handler agora `async`. Chama `db.auth.signUp({ email, password })` para criar conta Auth, depois `db.from('clientes').insert({...})` com todos os campos do formulário (PF e PJ). Datas convertidas de DD/MM/YYYY para ISO YYYY-MM-DD. Arrays (horário, serviços) passados como TEXT[].
+- **Pendente de configuração pelo usuário:**
+  - Criar projeto no Supabase, rodar `schema.sql` no SQL Editor
+  - Preencher `SUPABASE_URL` e `SUPABASE_ANON_KEY` em `supabase-config.js`
+  - Configurar EmailJS (templates TPL_LINK_CADASTRO e TPL_NOTIF_INTERNA)
+  - Registrar CallMeBot para obter apikey do WhatsApp
+  - Configurar URL de redirecionamento de auth no painel Supabase
+- **Motivação:** Solicitação do usuário para substituir os formulários fake por banco de dados real
+
+## 2026-04-27 — Fluxo "Solicitar Parceria" na pop-up de login
+
+- **Arquivo:** `index.html`
+- **Comportamento anterior:** Pop-up de login com dois painéis (login e recuperação de acesso). Sem forma de novos clientes solicitarem cadastro.
+- **Comportamento novo:**
+  - Botão "🤝 Solicitar Parceria" adicionado ao painel de login, separado por divisor "ou"
+  - Novo **painel Parceria** (3º painel no modal): campo de e-mail + botão "Enviar Link de Cadastro" + estado de sucesso
+  - Navegação bidirecional entre todos os painéis (login ↔ forgot ↔ parceria)
+  - Ao submeter o e-mail no painel Parceria, 3 ações ocorrem:
+    1. **EmailJS** envia e-mail ao cliente com link direto para `cadastro-cliente.html`
+    2. **EmailJS** envia notificação interna para a equipe HyperOlimpo
+    3. **CallMeBot API** envia mensagem automática no WhatsApp da HyperOlimpo com e-mail do cliente, horário e link
+  - SDK EmailJS carregado via CDN (`@emailjs/browser@4`)
+  - Configurações com constantes comentadas no topo do bloco JS (PUBLIC_KEY, SERVICE_ID, template IDs, WA_NUMBER, WA_APIKEY)
+  - Falha do WhatsApp é silenciosa (`.catch(() => {})`) para não bloquear o fluxo
+  - CSS: `.modal-or` (separador), `.btn-modal-secondary` (botão estilo secundário)
+- **Pendente de configuração:**
+  - Conta EmailJS com dois templates (cliente + interno)
+  - Registro no CallMeBot para obter apikey do WhatsApp
+- **Motivação:** Solicitação do usuário para fluxo de cadastro de novos clientes com notificação automática por e-mail e WhatsApp
+
+## 2026-04-27 — Página de cadastro de clientes (PF e PJ)
+
+- **Arquivo:** `cadastro-cliente.html` (novo)
+- **Comportamento anterior:** Sem página de cadastro.
+- **Comportamento novo:**
+  - Toggle Pessoa Física / Pessoa Jurídica no topo — mostra/oculta seções relevantes dinamicamente
+  - **Seção 1 (PJ):** Razão Social, Nome Fantasia, CNPJ, Inscrição Estadual e Municipal, Data de Abertura, Natureza Jurídica, Porte, Ramo de Atividade, Site
+  - **Seção Dados Pessoais / Responsável:** Nome, CPF, RG, Órgão Emissor, Data de Nascimento, Estado Civil, Gênero, Profissão, Nacionalidade (PF) / Cargo (PJ)
+  - **Seção Contato:** E-mail principal e secundário, Celular/WhatsApp, Telefone Fixo, LinkedIn, Instagram, horário de atendimento preferencial (checkboxes)
+  - **Seção Endereço:** CEP com busca automática via API ViaCEP, Logradouro, Número, Complemento, Bairro, Cidade, Estado, País
+  - **Seção Interesse:** Checkboxes de serviços, origem, orçamento estimado, descrição do projeto, observações
+  - **Seção Acesso:** Senha + confirmar senha com toggle de visibilidade e barra de força de senha (5 níveis com cores)
+  - Masks de entrada: CPF, CNPJ, CEP, celular, telefone fixo, data
+  - Validação frontend com highlight de campos inválidos e scroll automático ao primeiro erro
+  - Overlay de sucesso com nome personalizado pós-envio
+  - Topbar com logo + link "Voltar ao site"; `noindex, nofollow` nas meta tags
+  - Design 100% consistente com o site principal (mesmo sistema de cores, tipografia, cards)
+  - Backend pendente: submissão do formulário precisa de API / Firebase / Supabase (TODO no JS)
+- **Motivação:** Solicitação do usuário para página profissional de cadastro PF e PJ
+
+## 2026-04-27 — Área do Cliente: modal de login e recuperação de acesso
+
+- **Arquivo:** `index.html`
+- **Comportamento anterior:** Sem área do cliente. Nenhum link de acesso no menu.
+- **Comportamento novo:**
+  - Link "Área do Cliente" adicionado ao `#navMenu` (desktop) e `#navOverlay` (mobile), com estilo visual diferenciado (borda + cor accent)
+  - Modal fullscreen com `backdrop-filter: blur` e animação de entrada (scale + translateY)
+  - **Painel 1 — Login:** campos e-mail e senha, botão "Entrar", estado de carregamento, mensagem de erro, link "Esqueci meu acesso"
+  - **Painel 2 — Recuperar Acesso:** campo de e-mail, botão com estado de carregamento, links de suporte (e-mail `atendimento@hyperolimpo.com.br` e WhatsApp), estado de sucesso com ícone e mensagem
+  - Modal fecha ao clicar no overlay, no botão ✕ ou pressionar Esc; body scroll bloqueado quando aberto
+  - Validação de e-mail via regex no frontend
+  - **Integração de backend pendente:** autenticação (login) e envio de e-mail de recuperação precisam de API/Firebase/Supabase — pontos `TODO` marcados no código
+- **Motivação:** Solicitação do usuário para adicionar acesso à área do cliente com fluxo de login e recuperação de senha
+
 ## 2026-04-27 — Correção do hamburger menu (backdrop-filter containing block)
 
 - **Arquivo:** `index.html`

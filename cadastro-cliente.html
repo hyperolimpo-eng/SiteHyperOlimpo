@@ -1,0 +1,1025 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cadastro de Cliente — HyperOlimpo</title>
+  <meta name="robots" content="noindex, nofollow" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    :root {
+      --navy:       #0A1628;
+      --navy-mid:   #0D1E38;
+      --navy-light: #122340;
+      --accent:     #3ABEFF;
+      --accent-glow:#1A9FDF;
+      --white:      #FFFFFF;
+      --off-white:  #CBD8E8;
+      --muted:      #7A9BB5;
+      --card-bg:    rgba(13,30,56,0.75);
+      --border:     rgba(58,190,255,0.18);
+      --border-hover: rgba(58,190,255,0.4);
+      --radius:     14px;
+      --success:    #22c55e;
+      --danger:     #ef4444;
+    }
+    html { scroll-behavior: smooth; }
+    body {
+      background: var(--navy);
+      color: var(--off-white);
+      font-family: 'Inter', sans-serif;
+      min-height: 100vh;
+    }
+    ::selection { background: var(--accent); color: var(--navy); }
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: var(--navy); }
+    ::-webkit-scrollbar-thumb { background: var(--accent-glow); border-radius: 3px; }
+
+    /* ── Topbar ── */
+    .topbar {
+      position: sticky; top: 0; z-index: 100;
+      background: rgba(10,22,40,0.95); backdrop-filter: blur(18px);
+      border-bottom: 1px solid var(--border);
+      padding: 1rem 2rem;
+      display: flex; align-items: center; justify-content: space-between; gap: 1rem;
+    }
+    .topbar-brand { display: flex; align-items: center; gap: 0.65rem; text-decoration: none; }
+    .topbar-brand img { width: 36px; height: 36px; border-radius: 50%; }
+    .topbar-brand span { font-family: 'Space Grotesk', sans-serif; font-weight: 700; font-size: 1rem; color: var(--white); }
+    .topbar-title { font-size: 0.85rem; color: var(--muted); font-weight: 500; }
+    .topbar-back {
+      font-size: 0.82rem; color: var(--accent); text-decoration: none; font-weight: 600;
+      display: flex; align-items: center; gap: 0.35rem;
+      transition: opacity 0.2s;
+    }
+    .topbar-back:hover { opacity: 0.75; }
+
+    /* ── Page layout ── */
+    .page {
+      max-width: 860px; margin: 0 auto;
+      padding: 2.5rem 1.5rem 5rem;
+    }
+    .page-header { margin-bottom: 2.5rem; }
+    .page-header .tag {
+      display: inline-block; background: rgba(58,190,255,0.1); border: 1px solid var(--border);
+      border-radius: 20px; padding: 0.3rem 0.9rem;
+      font-size: 0.72rem; font-weight: 600; letter-spacing: 0.14em;
+      color: var(--accent); text-transform: uppercase; margin-bottom: 0.8rem;
+    }
+    .page-header h1 { font-family: 'Space Grotesk', sans-serif; font-size: clamp(1.6rem, 3vw, 2.2rem); color: var(--white); font-weight: 700; margin-bottom: 0.4rem; }
+    .page-header p { font-size: 0.92rem; color: var(--muted); }
+
+    /* ── PF / PJ Toggle ── */
+    .type-toggle {
+      display: inline-flex; background: var(--navy-mid); border: 1px solid var(--border);
+      border-radius: 10px; padding: 5px; gap: 4px; margin-bottom: 2rem;
+    }
+    .type-btn {
+      padding: 0.55rem 1.6rem; border-radius: 7px; border: none; cursor: pointer;
+      font-family: 'Space Grotesk', sans-serif; font-size: 0.9rem; font-weight: 600;
+      color: var(--muted); background: transparent;
+      transition: background 0.25s, color 0.25s, box-shadow 0.25s;
+    }
+    .type-btn.active {
+      background: var(--accent); color: var(--navy);
+      box-shadow: 0 4px 18px rgba(58,190,255,0.3);
+    }
+
+    /* ── Form Card ── */
+    .form-card {
+      background: var(--card-bg); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 2rem;
+      margin-bottom: 1.5rem;
+      border-left: 3px solid var(--accent);
+    }
+    .card-header { display: flex; align-items: center; gap: 0.9rem; margin-bottom: 1.8rem; }
+    .card-num {
+      width: 36px; height: 36px; border-radius: 50%; flex-shrink: 0;
+      background: rgba(58,190,255,0.12); border: 1px solid rgba(58,190,255,0.3);
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'Space Grotesk', sans-serif; font-size: 0.9rem; font-weight: 700; color: var(--accent);
+    }
+    .card-title h2 { font-family: 'Space Grotesk', sans-serif; font-size: 1.05rem; font-weight: 700; color: var(--white); }
+    .card-title p  { font-size: 0.8rem; color: var(--muted); margin-top: 0.15rem; }
+
+    /* ── Form Grid ── */
+    .fg { display: grid; gap: 1rem; }
+    .fg-2  { grid-template-columns: 1fr 1fr; }
+    .fg-3  { grid-template-columns: 1fr 1fr 1fr; }
+    .fg-14 { grid-template-columns: 1fr 4fr; }
+    .fg-41 { grid-template-columns: 4fr 1fr; }
+    .fg-13 { grid-template-columns: 1fr 3fr; }
+    .col-full { grid-column: 1 / -1; }
+
+    /* ── Field ── */
+    .field { display: flex; flex-direction: column; gap: 0.4rem; }
+    .field label {
+      font-size: 0.75rem; font-weight: 600; color: var(--muted);
+      letter-spacing: 0.07em; text-transform: uppercase;
+    }
+    .field label .req { color: var(--accent); margin-left: 2px; }
+    .field input, .field select, .field textarea {
+      background: rgba(10,22,40,0.65); border: 1.5px solid var(--border);
+      border-radius: 9px; padding: 0.78rem 1rem;
+      color: var(--white); font-family: 'Inter', sans-serif; font-size: 0.9rem;
+      outline: none; transition: border-color 0.25s, box-shadow 0.25s;
+      width: 100%;
+    }
+    .field input::placeholder, .field textarea::placeholder { color: var(--muted); }
+    .field input:focus, .field select:focus, .field textarea:focus {
+      border-color: var(--accent); box-shadow: 0 0 0 3px rgba(58,190,255,0.1);
+    }
+    .field input.is-error, .field select.is-error { border-color: rgba(239,68,68,0.6); }
+    .field select { appearance: none; cursor: pointer; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' fill='none' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%237A9BB5' stroke-width='1.5' stroke-linecap='round'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 1rem center; padding-right: 2.5rem; }
+    .field select option { background: #0D1E38; }
+    .field textarea { resize: vertical; min-height: 100px; }
+    .field-hint { font-size: 0.75rem; color: var(--muted); margin-top: 0.25rem; }
+    .field-error-msg { font-size: 0.75rem; color: #fca5a5; margin-top: 0.25rem; display: none; }
+    .field.has-error .field-error-msg { display: block; }
+
+    /* ── Input with action button (CEP) ── */
+    .input-action { display: flex; gap: 0.5rem; }
+    .input-action input { flex: 1; }
+    .btn-action {
+      background: rgba(58,190,255,0.12); border: 1.5px solid var(--border);
+      color: var(--accent); border-radius: 9px;
+      padding: 0 1.2rem; font-size: 0.82rem; font-weight: 600;
+      cursor: pointer; white-space: nowrap;
+      transition: background 0.2s, border-color 0.2s;
+      font-family: 'Inter', sans-serif;
+    }
+    .btn-action:hover { background: rgba(58,190,255,0.22); border-color: var(--accent); }
+
+    /* ── Password field ── */
+    .pw-wrap { position: relative; }
+    .pw-wrap input { padding-right: 3rem; }
+    .pw-toggle {
+      position: absolute; right: 0.9rem; top: 50%; transform: translateY(-50%);
+      background: none; border: none; cursor: pointer; color: var(--muted);
+      font-size: 1rem; padding: 0; line-height: 1;
+      transition: color 0.2s;
+    }
+    .pw-toggle:hover { color: var(--accent); }
+
+    /* ── Password strength ── */
+    .pw-strength { margin-top: 0.5rem; }
+    .pw-strength-bar { height: 3px; border-radius: 2px; background: rgba(58,190,255,0.08); overflow: hidden; }
+    .pw-strength-fill { height: 100%; border-radius: 2px; width: 0; transition: width 0.35s, background 0.35s; }
+    .pw-strength-label { font-size: 0.72rem; color: var(--muted); margin-top: 0.3rem; }
+
+    /* ── Checkbox / Radio ── */
+    .check-group { display: flex; flex-wrap: wrap; gap: 0.6rem; }
+    .check-item { display: flex; align-items: center; gap: 0.5rem; cursor: pointer; }
+    .check-item input[type="checkbox"], .check-item input[type="radio"] { display: none; }
+    .check-box {
+      width: 18px; height: 18px; border-radius: 5px; flex-shrink: 0;
+      border: 1.5px solid var(--border); background: rgba(10,22,40,0.65);
+      display: flex; align-items: center; justify-content: center;
+      transition: background 0.2s, border-color 0.2s;
+    }
+    .check-item input:checked ~ .check-box {
+      background: var(--accent); border-color: var(--accent);
+    }
+    .check-box::after { content: '✓'; font-size: 0.65rem; color: var(--navy); display: none; font-weight: 700; }
+    .check-item input:checked ~ .check-box::after { display: block; }
+    .check-item span:not(.check-box) { font-size: 0.88rem; color: var(--off-white); }
+
+    /* ── Divider ── */
+    .divider { border: none; border-top: 1px solid var(--border); margin: 1.5rem 0; }
+
+    /* ── Section hidden/visible ── */
+    .pj-only, .pf-only { transition: opacity 0.3s; }
+    .pj-only.hidden, .pf-only.hidden { display: none; }
+
+    /* ── Status badge (CEP) ── */
+    .cep-status { font-size: 0.75rem; margin-top: 0.25rem; min-height: 1rem; }
+    .cep-status.ok    { color: var(--success); }
+    .cep-status.error { color: #fca5a5; }
+    .cep-status.loading { color: var(--muted); }
+
+    /* ── Submit area ── */
+    .submit-area { margin-top: 2rem; }
+    .terms-wrap {
+      background: rgba(58,190,255,0.04); border: 1px solid var(--border);
+      border-radius: 10px; padding: 1.2rem 1.4rem; margin-bottom: 1.5rem;
+      font-size: 0.85rem; color: var(--muted); line-height: 1.7;
+    }
+    .terms-wrap a { color: var(--accent); text-decoration: none; }
+    .terms-wrap a:hover { text-decoration: underline; }
+    .btn-submit {
+      width: 100%; background: var(--accent); color: var(--navy);
+      border: none; padding: 1rem; border-radius: 12px;
+      font-family: 'Space Grotesk', sans-serif; font-size: 1.05rem; font-weight: 700;
+      cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 0.6rem;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .btn-submit:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 10px 32px rgba(58,190,255,0.4); }
+    .btn-submit:disabled { opacity: 0.6; cursor: not-allowed; }
+
+    /* ── Success overlay ── */
+    .success-overlay {
+      position: fixed; inset: 0; z-index: 500;
+      background: rgba(5,12,25,0.92); backdrop-filter: blur(12px);
+      display: none; align-items: center; justify-content: center;
+    }
+    .success-overlay.show { display: flex; }
+    .success-card {
+      background: var(--navy-mid); border: 1px solid var(--border);
+      border-radius: 20px; padding: 3rem 2.5rem;
+      max-width: 440px; width: 90%; text-align: center;
+    }
+    .success-icon {
+      width: 72px; height: 72px; border-radius: 50%; margin: 0 auto 1.5rem;
+      background: rgba(34,197,94,0.12); border: 2px solid rgba(34,197,94,0.4);
+      display: flex; align-items: center; justify-content: center; font-size: 2rem;
+    }
+    .success-card h2 { font-family: 'Space Grotesk', sans-serif; font-size: 1.5rem; color: var(--white); margin-bottom: 0.6rem; }
+    .success-card p { font-size: 0.9rem; color: var(--muted); line-height: 1.7; }
+    .btn-success-back {
+      margin-top: 1.8rem; display: inline-flex; align-items: center; gap: 0.5rem;
+      background: var(--accent); color: var(--navy);
+      padding: 0.8rem 2rem; border-radius: 10px;
+      font-family: 'Space Grotesk', sans-serif; font-weight: 700; font-size: 0.95rem;
+      text-decoration: none; transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .btn-success-back:hover { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(58,190,255,0.4); }
+
+    /* ── Responsive ── */
+    @media (max-width: 640px) {
+      .page { padding: 1.5rem 1rem 4rem; }
+      .form-card { padding: 1.5rem; }
+      .fg-2, .fg-3, .fg-14, .fg-41, .fg-13 { grid-template-columns: 1fr; }
+      .type-btn { padding: 0.5rem 1.1rem; font-size: 0.85rem; }
+      .topbar { padding: 0.9rem 1.2rem; }
+      .topbar-title { display: none; }
+    }
+    @media (max-width: 480px) {
+      .topbar-back span { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ── Topbar ── -->
+  <header class="topbar">
+    <a href="index.html" class="topbar-brand">
+      <img src="logo_HO2.png" alt="HyperOlimpo" />
+      <span>HyperOlimpo</span>
+    </a>
+    <span class="topbar-title">Cadastro de Cliente</span>
+    <a href="index.html" class="topbar-back">
+      ← <span>Voltar ao site</span>
+    </a>
+  </header>
+
+  <!-- ── Page ── -->
+  <main class="page">
+    <div class="page-header">
+      <span class="tag">Área do Cliente</span>
+      <h1>Cadastro de Cliente</h1>
+      <p>Preencha os dados abaixo para criar seu acesso. Campos marcados com <span style="color:var(--accent)">*</span> são obrigatórios.</p>
+    </div>
+
+    <!-- Tipo de Pessoa -->
+    <div class="type-toggle" role="group" aria-label="Tipo de pessoa">
+      <button type="button" class="type-btn active" id="btnPF" onclick="setTipo('PF')">Pessoa Física</button>
+      <button type="button" class="type-btn"        id="btnPJ" onclick="setTipo('PJ')">Pessoa Jurídica</button>
+    </div>
+
+    <form id="cadastroForm" novalidate>
+      <input type="hidden" id="tipoPessoa" name="tipoPessoa" value="PF" />
+
+      <!-- ── 1. Dados da Empresa (PJ) ── -->
+      <div class="form-card pj-only hidden" id="secEmpresa">
+        <div class="card-header">
+          <div class="card-num">1</div>
+          <div class="card-title">
+            <h2>Dados da Empresa</h2>
+            <p>Informações do CNPJ e constituição jurídica</p>
+          </div>
+        </div>
+        <div class="fg fg-2">
+          <div class="field col-full">
+            <label>Razão Social <span class="req">*</span></label>
+            <input type="text" name="razaoSocial" placeholder="Nome oficial da empresa" />
+            <span class="field-error-msg">Campo obrigatório</span>
+          </div>
+          <div class="field">
+            <label>Nome Fantasia</label>
+            <input type="text" name="nomeFantasia" placeholder="Como a empresa é conhecida" />
+          </div>
+          <div class="field">
+            <label>CNPJ <span class="req">*</span></label>
+            <input type="text" name="cnpj" placeholder="00.000.000/0000-00" maxlength="18" data-mask="cnpj" />
+            <span class="field-error-msg">CNPJ inválido</span>
+          </div>
+          <div class="field">
+            <label>Inscrição Estadual</label>
+            <input type="text" name="inscricaoEstadual" placeholder="Isento ou número" />
+          </div>
+          <div class="field">
+            <label>Inscrição Municipal</label>
+            <input type="text" name="inscricaoMunicipal" placeholder="Número da IM" />
+          </div>
+          <div class="field">
+            <label>Data de Abertura <span class="req">*</span></label>
+            <input type="text" name="dataAbertura" placeholder="DD/MM/AAAA" maxlength="10" data-mask="date" />
+            <span class="field-error-msg">Data inválida</span>
+          </div>
+          <div class="field">
+            <label>Natureza Jurídica</label>
+            <select name="naturezaJuridica">
+              <option value="">Selecione</option>
+              <option>Empresário Individual (EI)</option>
+              <option>Microempreendedor Individual (MEI)</option>
+              <option>Empresa Individual de Responsabilidade Limitada (EIRELI)</option>
+              <option>Sociedade Limitada (LTDA)</option>
+              <option>Sociedade Anônima (S.A.)</option>
+              <option>Sociedade Simples</option>
+              <option>Associação</option>
+              <option>Fundação</option>
+              <option>Outro</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>Porte da Empresa</label>
+            <select name="porte">
+              <option value="">Selecione</option>
+              <option>MEI</option>
+              <option>Microempresa (ME)</option>
+              <option>Empresa de Pequeno Porte (EPP)</option>
+              <option>Médio Porte</option>
+              <option>Grande Porte</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>Ramo de Atividade</label>
+            <input type="text" name="ramoAtividade" placeholder="Ex: Tecnologia, Varejo, Saúde..." />
+          </div>
+          <div class="field">
+            <label>Site da Empresa</label>
+            <input type="url" name="siteEmpresa" placeholder="https://suaempresa.com.br" />
+          </div>
+        </div>
+      </div>
+
+      <!-- ── 2. Dados Pessoais ── -->
+      <div class="form-card" id="secPessoal">
+        <div class="card-header">
+          <div class="card-num" id="numPessoal">1</div>
+          <div class="card-title">
+            <h2 id="titlePessoal">Dados Pessoais</h2>
+            <p id="subtitlePessoal">Informações do titular do cadastro</p>
+          </div>
+        </div>
+        <div class="fg fg-2">
+          <div class="field col-full">
+            <label>Nome Completo <span class="req">*</span></label>
+            <input type="text" name="nomeCompleto" placeholder="Seu nome completo" />
+            <span class="field-error-msg">Campo obrigatório</span>
+          </div>
+          <div class="field">
+            <label>CPF <span class="req">*</span></label>
+            <input type="text" name="cpf" placeholder="000.000.000-00" maxlength="14" data-mask="cpf" />
+            <span class="field-error-msg">CPF inválido</span>
+          </div>
+          <div class="field pf-only">
+            <label>RG</label>
+            <input type="text" name="rg" placeholder="Número do RG" />
+          </div>
+          <div class="field pf-only">
+            <label>Órgão Emissor</label>
+            <input type="text" name="orgaoEmissor" placeholder="Ex: SSP/SP" />
+          </div>
+          <div class="field pf-only">
+            <label>Data de Nascimento <span class="req">*</span></label>
+            <input type="text" name="dataNascimento" placeholder="DD/MM/AAAA" maxlength="10" data-mask="date" />
+            <span class="field-error-msg">Data inválida</span>
+          </div>
+          <div class="field pf-only">
+            <label>Estado Civil</label>
+            <select name="estadoCivil">
+              <option value="">Selecione</option>
+              <option>Solteiro(a)</option>
+              <option>Casado(a)</option>
+              <option>União Estável</option>
+              <option>Separado(a)</option>
+              <option>Divorciado(a)</option>
+              <option>Viúvo(a)</option>
+            </select>
+          </div>
+          <div class="field pf-only">
+            <label>Gênero</label>
+            <select name="genero">
+              <option value="">Selecione</option>
+              <option>Masculino</option>
+              <option>Feminino</option>
+              <option>Não-binário</option>
+              <option>Prefiro não informar</option>
+            </select>
+          </div>
+          <div class="field pf-only">
+            <label>Profissão</label>
+            <input type="text" name="profissao" placeholder="Sua profissão" />
+          </div>
+          <div class="field pf-only">
+            <label>Nacionalidade</label>
+            <input type="text" name="nacionalidade" placeholder="Brasileira" value="" />
+          </div>
+          <div class="field pj-only hidden">
+            <label>Cargo / Função <span class="req">*</span></label>
+            <input type="text" name="cargo" placeholder="Ex: Diretor, Sócio, Gerente..." />
+            <span class="field-error-msg">Campo obrigatório</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── 3. Dados de Contato ── -->
+      <div class="form-card" id="secContato">
+        <div class="card-header">
+          <div class="card-num" id="numContato">2</div>
+          <div class="card-title">
+            <h2>Dados de Contato</h2>
+            <p>E-mails e telefones para comunicação</p>
+          </div>
+        </div>
+        <div class="fg fg-2">
+          <div class="field">
+            <label>E-mail Principal <span class="req">*</span></label>
+            <input type="email" name="email" placeholder="seu@email.com" autocomplete="email" />
+            <span class="field-error-msg">E-mail inválido</span>
+          </div>
+          <div class="field">
+            <label>E-mail Secundário</label>
+            <input type="email" name="emailSecundario" placeholder="outro@email.com" />
+          </div>
+          <div class="field">
+            <label>Celular / WhatsApp <span class="req">*</span></label>
+            <input type="tel" name="celular" placeholder="(00) 00000-0000" maxlength="15" data-mask="phone" />
+            <span class="field-hint">Preferimos contato via WhatsApp</span>
+            <span class="field-error-msg">Número inválido</span>
+          </div>
+          <div class="field">
+            <label>Telefone Fixo</label>
+            <input type="tel" name="telefoneFixo" placeholder="(00) 0000-0000" maxlength="14" data-mask="phone-fixo" />
+          </div>
+        </div>
+
+        <hr class="divider" />
+
+        <div class="fg fg-2">
+          <div class="field pf-only">
+            <label>LinkedIn</label>
+            <input type="url" name="linkedin" placeholder="https://linkedin.com/in/seuperfil" />
+          </div>
+          <div class="field pf-only">
+            <label>Instagram</label>
+            <input type="text" name="instagram" placeholder="@seuperfil" />
+          </div>
+        </div>
+        <div class="fg fg-2 pj-only hidden">
+          <div class="field">
+            <label>LinkedIn da Empresa</label>
+            <input type="url" name="linkedinEmpresa" placeholder="https://linkedin.com/company/..." />
+          </div>
+          <div class="field">
+            <label>Instagram da Empresa</label>
+            <input type="text" name="instagramEmpresa" placeholder="@empresa" />
+          </div>
+        </div>
+
+        <div style="margin-top:1rem;">
+          <label style="font-size:0.75rem;font-weight:600;color:var(--muted);letter-spacing:0.07em;text-transform:uppercase;display:block;margin-bottom:0.6rem;">Melhor horário para contato</label>
+          <div class="check-group">
+            <label class="check-item">
+              <input type="checkbox" name="horario" value="manha" />
+              <span class="check-box"></span>
+              <span>Manhã (8h–12h)</span>
+            </label>
+            <label class="check-item">
+              <input type="checkbox" name="horario" value="tarde" />
+              <span class="check-box"></span>
+              <span>Tarde (12h–18h)</span>
+            </label>
+            <label class="check-item">
+              <input type="checkbox" name="horario" value="noite" />
+              <span class="check-box"></span>
+              <span>Noite (18h–22h)</span>
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── 4. Endereço ── -->
+      <div class="form-card" id="secEndereco">
+        <div class="card-header">
+          <div class="card-num" id="numEndereco">3</div>
+          <div class="card-title">
+            <h2>Endereço</h2>
+            <p>Informe o CEP para preenchimento automático</p>
+          </div>
+        </div>
+        <div class="fg fg-2">
+          <div class="field">
+            <label>CEP <span class="req">*</span></label>
+            <div class="input-action">
+              <input type="text" name="cep" id="inputCep" placeholder="00000-000" maxlength="9" data-mask="cep" />
+              <button type="button" class="btn-action" onclick="buscarCep()">Buscar</button>
+            </div>
+            <span class="cep-status" id="cepStatus"></span>
+            <span class="field-error-msg">CEP inválido</span>
+          </div>
+          <div class="field">
+            <label>País</label>
+            <input type="text" name="pais" id="inputPais" placeholder="Brasil" value="Brasil" />
+          </div>
+          <div class="field" style="grid-column: 1 / -1;">
+            <label>Logradouro <span class="req">*</span></label>
+            <input type="text" name="logradouro" id="inputLogradouro" placeholder="Rua, Avenida, Travessa..." />
+            <span class="field-error-msg">Campo obrigatório</span>
+          </div>
+          <div class="field">
+            <label>Número <span class="req">*</span></label>
+            <input type="text" name="numero" id="inputNumero" placeholder="Nº" />
+            <span class="field-error-msg">Campo obrigatório</span>
+          </div>
+          <div class="field">
+            <label>Complemento</label>
+            <input type="text" name="complemento" placeholder="Apto, Sala, Bloco..." />
+          </div>
+          <div class="field">
+            <label>Bairro <span class="req">*</span></label>
+            <input type="text" name="bairro" id="inputBairro" placeholder="Bairro" />
+            <span class="field-error-msg">Campo obrigatório</span>
+          </div>
+          <div class="field">
+            <label>Cidade <span class="req">*</span></label>
+            <input type="text" name="cidade" id="inputCidade" placeholder="Cidade" />
+            <span class="field-error-msg">Campo obrigatório</span>
+          </div>
+          <div class="field">
+            <label>Estado <span class="req">*</span></label>
+            <select name="estado" id="inputEstado">
+              <option value="">Selecione</option>
+              <option>AC</option><option>AL</option><option>AP</option><option>AM</option>
+              <option>BA</option><option>CE</option><option>DF</option><option>ES</option>
+              <option>GO</option><option>MA</option><option>MT</option><option>MS</option>
+              <option>MG</option><option>PA</option><option>PB</option><option>PR</option>
+              <option>PE</option><option>PI</option><option>RJ</option><option>RN</option>
+              <option>RS</option><option>RO</option><option>RR</option><option>SC</option>
+              <option>SP</option><option>SE</option><option>TO</option>
+            </select>
+            <span class="field-error-msg">Campo obrigatório</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── 5. Interesse & Projeto ── -->
+      <div class="form-card" id="secInteresse">
+        <div class="card-header">
+          <div class="card-num" id="numInteresse">4</div>
+          <div class="card-title">
+            <h2>Interesse & Projeto</h2>
+            <p>Nos conte o que você está buscando</p>
+          </div>
+        </div>
+
+        <div style="margin-bottom:1.2rem;">
+          <label style="font-size:0.75rem;font-weight:600;color:var(--muted);letter-spacing:0.07em;text-transform:uppercase;display:block;margin-bottom:0.7rem;">Tipo de serviço de interesse <span style="color:var(--accent)">*</span></label>
+          <div class="check-group">
+            <label class="check-item">
+              <input type="checkbox" name="servico" value="sistemas" />
+              <span class="check-box"></span><span>Sistemas & Software</span>
+            </label>
+            <label class="check-item">
+              <input type="checkbox" name="servico" value="web" />
+              <span class="check-box"></span><span>Desenvolvimento Web</span>
+            </label>
+            <label class="check-item">
+              <input type="checkbox" name="servico" value="mobile" />
+              <span class="check-box"></span><span>Aplicativos Mobile</span>
+            </label>
+            <label class="check-item">
+              <input type="checkbox" name="servico" value="automacao" />
+              <span class="check-box"></span><span>Automação</span>
+            </label>
+            <label class="check-item">
+              <input type="checkbox" name="servico" value="api" />
+              <span class="check-box"></span><span>Integrações & APIs</span>
+            </label>
+            <label class="check-item">
+              <input type="checkbox" name="servico" value="bi" />
+              <span class="check-box"></span><span>Business Intelligence</span>
+            </label>
+          </div>
+        </div>
+
+        <div class="fg fg-2">
+          <div class="field">
+            <label>Como nos encontrou?</label>
+            <select name="origem">
+              <option value="">Selecione</option>
+              <option>Google / Buscador</option>
+              <option>Instagram</option>
+              <option>LinkedIn</option>
+              <option>Indicação de cliente</option>
+              <option>Indicação de parceiro</option>
+              <option>Evento / Feira</option>
+              <option>WhatsApp</option>
+              <option>Outro</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>Orçamento estimado</label>
+            <select name="orcamento">
+              <option value="">Prefiro não informar</option>
+              <option>Até R$ 5.000</option>
+              <option>R$ 5.000 – R$ 15.000</option>
+              <option>R$ 15.000 – R$ 50.000</option>
+              <option>R$ 50.000 – R$ 150.000</option>
+              <option>Acima de R$ 150.000</option>
+            </select>
+          </div>
+          <div class="field col-full">
+            <label>Descrição do projeto / necessidade</label>
+            <textarea name="descricao" placeholder="Descreva brevemente o que você precisa, o problema que quer resolver ou o projeto que tem em mente..."></textarea>
+          </div>
+          <div class="field col-full">
+            <label>Observações adicionais</label>
+            <textarea name="observacoes" placeholder="Outras informações relevantes, restrições, prazos, etc." style="min-height:80px;"></textarea>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── 6. Acesso ao Sistema ── -->
+      <div class="form-card" id="secAcesso">
+        <div class="card-header">
+          <div class="card-num" id="numAcesso">5</div>
+          <div class="card-title">
+            <h2>Acesso ao Sistema</h2>
+            <p>Crie sua senha de acesso à área do cliente</p>
+          </div>
+        </div>
+        <div class="fg fg-2">
+          <div class="field">
+            <label>Senha <span class="req">*</span></label>
+            <div class="pw-wrap">
+              <input type="password" name="senha" id="inputSenha" placeholder="Mínimo 8 caracteres" autocomplete="new-password" />
+              <button type="button" class="pw-toggle" onclick="togglePw('inputSenha', this)" aria-label="Mostrar senha">👁</button>
+            </div>
+            <div class="pw-strength" id="pwStrength">
+              <div class="pw-strength-bar"><div class="pw-strength-fill" id="pwFill"></div></div>
+              <span class="pw-strength-label" id="pwLabel"></span>
+            </div>
+            <span class="field-error-msg">Mínimo 8 caracteres</span>
+          </div>
+          <div class="field">
+            <label>Confirmar Senha <span class="req">*</span></label>
+            <div class="pw-wrap">
+              <input type="password" name="confirmarSenha" id="inputConfirmarSenha" placeholder="Repita a senha" autocomplete="new-password" />
+              <button type="button" class="pw-toggle" onclick="togglePw('inputConfirmarSenha', this)" aria-label="Mostrar senha">👁</button>
+            </div>
+            <span class="field-error-msg">As senhas não coincidem</span>
+          </div>
+        </div>
+        <div style="margin-top:1rem; padding:0.9rem 1.1rem; background:rgba(58,190,255,0.05); border-radius:8px; border:1px solid rgba(58,190,255,0.1);">
+          <p style="font-size:0.8rem; color:var(--muted); line-height:1.7;">
+            A senha deve conter pelo menos: <strong style="color:var(--off-white)">8 caracteres</strong>, uma <strong style="color:var(--off-white)">letra maiúscula</strong>, uma <strong style="color:var(--off-white)">letra minúscula</strong>, um <strong style="color:var(--off-white)">número</strong> e um <strong style="color:var(--off-white)">caractere especial</strong>.
+          </p>
+        </div>
+      </div>
+
+      <!-- ── Submit ── -->
+      <div class="submit-area">
+        <div class="terms-wrap">
+          <label class="check-item" style="align-items:flex-start; gap:0.7rem;">
+            <input type="checkbox" id="aceitaTermos" name="aceitaTermos" />
+            <span class="check-box" style="margin-top:2px; flex-shrink:0;"></span>
+            <span style="font-size:0.85rem; color:var(--muted); line-height:1.7;">
+              Li e concordo com os <a href="#">Termos de Uso</a> e a <a href="#">Política de Privacidade</a> da HyperOlimpo. Autorizo o uso dos meus dados para fins de comunicação e prestação de serviços conforme a <a href="#">LGPD</a>.
+            </span>
+          </label>
+        </div>
+        <button type="submit" class="btn-submit" id="btnSubmit">
+          <span id="btnSubmitText">Criar Cadastro</span>
+          <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </button>
+        <p style="text-align:center; font-size:0.78rem; color:var(--muted); margin-top:1rem;">
+          Seus dados são protegidos com criptografia e tratados conforme a LGPD.
+        </p>
+      </div>
+    </form>
+  </main>
+
+  <!-- ── Success Overlay ── -->
+  <div class="success-overlay" id="successOverlay">
+    <div class="success-card">
+      <div class="success-icon">✓</div>
+      <h2>Cadastro realizado!</h2>
+      <p id="successMsg">Seu cadastro foi enviado com sucesso.<br/>Em breve nossa equipe entrará em contato para confirmar seu acesso.</p>
+      <a href="index.html" class="btn-success-back">← Voltar ao site</a>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="supabase-config.js"></script>
+  <script>
+    /* ── Tipo PF / PJ ── */
+    function setTipo(tipo) {
+      document.getElementById('tipoPessoa').value = tipo;
+      document.getElementById('btnPF').classList.toggle('active', tipo === 'PF');
+      document.getElementById('btnPJ').classList.toggle('active', tipo === 'PJ');
+
+      document.querySelectorAll('.pj-only').forEach(el => el.classList.toggle('hidden', tipo !== 'PJ'));
+      document.querySelectorAll('.pf-only').forEach(el => el.classList.toggle('hidden', tipo !== 'PF'));
+
+      const isPJ = tipo === 'PJ';
+      document.getElementById('numPessoal').textContent    = isPJ ? '2' : '1';
+      document.getElementById('titlePessoal').textContent  = isPJ ? 'Responsável Legal' : 'Dados Pessoais';
+      document.getElementById('subtitlePessoal').textContent = isPJ ? 'Dados do representante da empresa' : 'Informações do titular do cadastro';
+      document.getElementById('numContato').textContent    = isPJ ? '3' : '2';
+      document.getElementById('numEndereco').textContent   = isPJ ? '4' : '3';
+      document.getElementById('numInteresse').textContent  = isPJ ? '5' : '4';
+      document.getElementById('numAcesso').textContent     = isPJ ? '6' : '5';
+    }
+
+    /* ── Input Masks ── */
+    function applyMask(input, type) {
+      let v = input.value.replace(/\D/g, '');
+      if (type === 'cpf') {
+        v = v.slice(0, 11);
+        v = v.replace(/(\d{3})(\d)/, '$1.$2')
+             .replace(/(\d{3})(\d)/, '$1.$2')
+             .replace(/(\d{3})(\d{1,2})$/, '$1-$2');
+      } else if (type === 'cnpj') {
+        v = v.slice(0, 14);
+        v = v.replace(/(\d{2})(\d)/, '$1.$2')
+             .replace(/(\d{3})(\d)/, '$1.$2')
+             .replace(/(\d{3})(\d)/, '$1/$2')
+             .replace(/(\d{4})(\d{1,2})$/, '$1-$2');
+      } else if (type === 'cep') {
+        v = v.slice(0, 8);
+        v = v.replace(/(\d{5})(\d)/, '$1-$2');
+      } else if (type === 'phone') {
+        v = v.slice(0, 11);
+        if (v.length <= 10) v = v.replace(/(\d{2})(\d{4})(\d{0,4})/, '($1) $2-$3');
+        else                v = v.replace(/(\d{2})(\d{5})(\d{0,4})/, '($1) $2-$3');
+      } else if (type === 'phone-fixo') {
+        v = v.slice(0, 10);
+        v = v.replace(/(\d{2})(\d{4})(\d{0,4})/, '($1) $2-$3');
+      } else if (type === 'date') {
+        v = v.slice(0, 8);
+        v = v.replace(/(\d{2})(\d)/, '$1/$2').replace(/(\d{2})(\d)/, '$1/$2');
+      }
+      input.value = v;
+    }
+
+    document.querySelectorAll('[data-mask]').forEach(input => {
+      input.addEventListener('input', () => applyMask(input, input.dataset.mask));
+    });
+
+    /* ── CEP Autocomplete (ViaCEP) ── */
+    async function buscarCep() {
+      const cep = document.getElementById('inputCep').value.replace(/\D/g, '');
+      const status = document.getElementById('cepStatus');
+      if (cep.length !== 8) {
+        status.textContent = 'Informe um CEP com 8 dígitos.';
+        status.className = 'cep-status error';
+        return;
+      }
+      status.textContent = 'Buscando...';
+      status.className = 'cep-status loading';
+      try {
+        const res = await fetch(`https://viacep.com.br/ws/${cep}/json/`);
+        const data = await res.json();
+        if (data.erro) {
+          status.textContent = 'CEP não encontrado.';
+          status.className = 'cep-status error';
+          return;
+        }
+        document.getElementById('inputLogradouro').value = data.logradouro || '';
+        document.getElementById('inputBairro').value     = data.bairro     || '';
+        document.getElementById('inputCidade').value     = data.localidade || '';
+        document.getElementById('inputEstado').value     = data.uf         || '';
+        document.getElementById('inputPais').value       = 'Brasil';
+        status.textContent = '✓ Endereço preenchido automaticamente';
+        status.className = 'cep-status ok';
+        document.getElementById('inputNumero').focus();
+      } catch {
+        status.textContent = 'Erro ao buscar CEP. Verifique sua conexão.';
+        status.className = 'cep-status error';
+      }
+    }
+
+    document.getElementById('inputCep').addEventListener('keydown', e => {
+      if (e.key === 'Enter') { e.preventDefault(); buscarCep(); }
+    });
+
+    /* ── Password visibility toggle ── */
+    function togglePw(id, btn) {
+      const input = document.getElementById(id);
+      const isText = input.type === 'text';
+      input.type = isText ? 'password' : 'text';
+      btn.textContent = isText ? '👁' : '🙈';
+    }
+
+    /* ── Password strength ── */
+    document.getElementById('inputSenha').addEventListener('input', function () {
+      const v = this.value;
+      const fill  = document.getElementById('pwFill');
+      const label = document.getElementById('pwLabel');
+      let score = 0;
+      if (v.length >= 8)            score++;
+      if (/[A-Z]/.test(v))          score++;
+      if (/[a-z]/.test(v))          score++;
+      if (/\d/.test(v))             score++;
+      if (/[^A-Za-z0-9]/.test(v))   score++;
+      const pct   = ['0%', '20%', '40%', '65%', '85%', '100%'][score];
+      const color = ['', '#ef4444', '#f97316', '#eab308', '#22c55e', '#3ABEFF'][score];
+      const text  = ['', 'Muito fraca', 'Fraca', 'Razoável', 'Forte', 'Muito forte'][score];
+      fill.style.width = pct;
+      fill.style.background = color;
+      label.textContent = v.length ? text : '';
+      label.style.color = color;
+    });
+
+    /* ── Validation ── */
+    function required(field) {
+      const el = field.querySelector('input, select, textarea');
+      const val = el ? el.value.trim() : '';
+      const ok = val !== '';
+      field.classList.toggle('has-error', !ok);
+      if (el) el.classList.toggle('is-error', !ok);
+      return ok;
+    }
+    function validEmail(field) {
+      const el = field.querySelector('input');
+      const ok = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(el.value.trim());
+      field.classList.toggle('has-error', !ok);
+      el.classList.toggle('is-error', !ok);
+      return ok;
+    }
+
+    /* ── Form submit ── */
+    document.getElementById('cadastroForm').addEventListener('submit', async function (e) {
+      e.preventDefault();
+      const tipo = document.getElementById('tipoPessoa').value;
+      let valid = true;
+
+      // Required fields PF
+      if (tipo === 'PF') {
+        ['nomeCompleto', 'cpf', 'dataNascimento'].forEach(n => {
+          const f = document.querySelector(`[name="${n}"]`)?.closest('.field');
+          if (f) valid = required(f) && valid;
+        });
+      }
+      // Required fields PJ
+      if (tipo === 'PJ') {
+        ['razaoSocial', 'cnpj', 'dataAbertura', 'nomeCompleto', 'cpf', 'cargo'].forEach(n => {
+          const f = document.querySelector(`[name="${n}"]`)?.closest('.field');
+          if (f) valid = required(f) && valid;
+        });
+      }
+      // Email
+      const emailField = document.querySelector('[name="email"]')?.closest('.field');
+      if (emailField) valid = validEmail(emailField) && valid;
+
+      // Celular
+      const celField = document.querySelector('[name="celular"]')?.closest('.field');
+      if (celField) valid = required(celField) && valid;
+
+      // Endereço
+      ['cep', 'logradouro', 'numero', 'bairro', 'cidade', 'estado'].forEach(n => {
+        const f = document.querySelector(`[name="${n}"]`)?.closest('.field');
+        if (f) valid = required(f) && valid;
+      });
+
+      // Senha
+      const senha = document.getElementById('inputSenha').value;
+      const confirmar = document.getElementById('inputConfirmarSenha').value;
+      const senhaField = document.getElementById('inputSenha').closest('.field');
+      const confirmarField = document.getElementById('inputConfirmarSenha').closest('.field');
+
+      if (senha.length < 8) {
+        senhaField.classList.add('has-error');
+        document.getElementById('inputSenha').classList.add('is-error');
+        valid = false;
+      } else {
+        senhaField.classList.remove('has-error');
+      }
+      if (senha !== confirmar || !confirmar) {
+        confirmarField.classList.add('has-error');
+        document.getElementById('inputConfirmarSenha').classList.add('is-error');
+        valid = false;
+      } else {
+        confirmarField.classList.remove('has-error');
+      }
+
+      // Termos
+      if (!document.getElementById('aceitaTermos').checked) {
+        alert('Você precisa aceitar os Termos de Uso para continuar.');
+        valid = false;
+      }
+
+      if (!valid) {
+        const firstError = document.querySelector('.is-error, .has-error input, .has-error select');
+        if (firstError) firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        return;
+      }
+
+      const btn = document.getElementById('btnSubmit');
+      const txt = document.getElementById('btnSubmitText');
+      btn.disabled = true;
+      txt.textContent = 'Criando conta...';
+
+      try {
+        const tipo  = document.getElementById('tipoPessoa').value;
+        const fd    = new FormData(document.getElementById('cadastroForm'));
+        const email = fd.get('email');
+        const senha = fd.get('senha');
+
+        function toISO(dateStr) {
+          if (!dateStr) return null;
+          const [d, m, y] = dateStr.split('/');
+          return (d && m && y) ? `${y}-${m.padStart(2,'0')}-${d.padStart(2,'0')}` : null;
+        }
+
+        const horarios = [...document.querySelectorAll('[name="horario"]:checked')].map(el => el.value);
+        const servicos = [...document.querySelectorAll('[name="servico"]:checked')].map(el => el.value);
+        const linkedin  = tipo === 'PF' ? fd.get('linkedin')  : fd.get('linkedinEmpresa');
+        const instagram = tipo === 'PF' ? fd.get('instagram') : fd.get('instagramEmpresa');
+
+        // 1. Criar usuário no Supabase Auth
+        const { data: authData, error: authError } = await db.auth.signUp({
+          email,
+          password: senha,
+          options: { data: { nome: fd.get('nomeCompleto') } }
+        });
+        if (authError) throw authError;
+
+        // 2. Inserir registro na tabela clientes
+        const { error: dbError } = await db.from('clientes').insert({
+          tipo_pessoa:      tipo,
+          user_id:          authData.user?.id,
+          status:           'pendente',
+          nome_completo:    fd.get('nomeCompleto')     || null,
+          cpf:              fd.get('cpf')              || null,
+          rg:               fd.get('rg')               || null,
+          orgao_emissor:    fd.get('orgaoEmissor')     || null,
+          data_nascimento:  toISO(fd.get('dataNascimento')),
+          estado_civil:     fd.get('estadoCivil')      || null,
+          genero:           fd.get('genero')           || null,
+          profissao:        fd.get('profissao')        || null,
+          nacionalidade:    fd.get('nacionalidade')    || null,
+          razao_social:     fd.get('razaoSocial')      || null,
+          nome_fantasia:    fd.get('nomeFantasia')     || null,
+          cnpj:             fd.get('cnpj')             || null,
+          inscricao_est:    fd.get('inscricaoEstadual')|| null,
+          inscricao_mun:    fd.get('inscricaoMunicipal')|| null,
+          data_abertura:    toISO(fd.get('dataAbertura')),
+          natureza_juridica: fd.get('naturezaJuridica')|| null,
+          porte:            fd.get('porte')            || null,
+          ramo_atividade:   fd.get('ramoAtividade')   || null,
+          site_empresa:     fd.get('siteEmpresa')      || null,
+          cargo:            fd.get('cargo')            || null,
+          email:            email,
+          email_secundario: fd.get('emailSecundario')  || null,
+          celular:          fd.get('celular')          || null,
+          telefone_fixo:    fd.get('telefoneFixo')     || null,
+          linkedin:         linkedin                   || null,
+          instagram:        instagram                  || null,
+          horario_contato:  horarios.length ? horarios : null,
+          cep:              fd.get('cep')              || null,
+          logradouro:       fd.get('logradouro')       || null,
+          numero:           fd.get('numero')           || null,
+          complemento:      fd.get('complemento')      || null,
+          bairro:           fd.get('bairro')           || null,
+          cidade:           fd.get('cidade')           || null,
+          estado_uf:        fd.get('estado')           || null,
+          pais:             fd.get('pais')             || 'Brasil',
+          servicos:         servicos.length ? servicos : null,
+          origem:           fd.get('origem')           || null,
+          orcamento:        fd.get('orcamento')        || null,
+          descricao:        fd.get('descricao')        || null,
+          observacoes:      fd.get('observacoes')      || null,
+        });
+        if (dbError) throw dbError;
+
+        const nome = (fd.get('nomeCompleto') || '').split(' ')[0];
+        document.getElementById('successMsg').innerHTML =
+          `Olá, <strong style="color:var(--accent)">${nome}</strong>! Seu cadastro foi criado com sucesso.<br/>
+           Verifique seu e-mail para confirmar a conta. Nossa equipe entrará em contato em até <strong>24 horas</strong>.`;
+        document.getElementById('successOverlay').classList.add('show');
+
+      } catch (err) {
+        btn.disabled = false;
+        txt.textContent = 'Criar Cadastro';
+        alert('Erro ao criar cadastro: ' + (err.message || 'Tente novamente.'));
+      }
+    });
+  </script>
+</body>
+</html>
