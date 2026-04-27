@@ -17,13 +17,23 @@ Documentação do projeto e registro de ações executadas pelo assistente.
 
 - Todo código gerado deve ser registrado no `CHANGELOG.md` (comportamento anterior vs. novo)
 - Todo código gerado deve ser registrado na seção **Histórico de Ações** deste arquivo
+- Após cada alteração no site, criar um commit na branch `staging` com mensagem descritiva
 - Não há backend; integrações externas (e-mail, WhatsApp) devem usar serviços de terceiros (Formspree, EmailJS, etc.)
+
+### Fluxo de branches
+- `staging` — branch de desenvolvimento; todo commit de alteração vai aqui
+- `main` — branch de produção; merge feito manualmente pelo usuário quando pronto
 
 ---
 
 ## Histórico de Ações
 
 <!-- As entradas mais recentes ficam no topo -->
+
+### 2026-04-27 — Configuração da branch staging e convenção de commits
+- Criada branch `staging` a partir de `main`
+- Definida convenção: cada alteração no site gera um commit na branch `staging`
+- Motivação: solicitação do usuário para versionar cada alteração separadamente
 
 ### 2026-04-27 — Criação dos arquivos de rastreamento
 - Criado `CHANGELOG.md` para histórico de alterações de código
