@@ -193,7 +193,7 @@ on conflict (id) do nothing;
 
 -- Usuários (user_id null — vincular após criar o auth user no Supabase Dashboard)
 insert into public.usuarios (id, perfil_id, nome_completo, email, cargo, departamento) values
-  ('e1000000-0000-0000-0000-000000000001', 'f1000000-0000-0000-0000-000000000001', 'Rafael Bernardino',   'rafael@hyperolimpo.com.br',   'CEO',                   'Diretoria'),
+  ('e1000000-0000-0000-0000-000000000001', 'f1000000-0000-0000-0000-000000000001', 'Rafael Bernardino',   'rafaelg.bernardino@hotmail.com', 'CEO',               'Diretoria'),
   ('e2000000-0000-0000-0000-000000000002', 'f2000000-0000-0000-0000-000000000002', 'Lucas Mendes',        'lucas@hyperolimpo.com.br',    'Desenvolvedor Sênior',  'Tecnologia'),
   ('e3000000-0000-0000-0000-000000000003', 'f2000000-0000-0000-0000-000000000002', 'Ana Paula Ferreira',  'ana@hyperolimpo.com.br',      'Desenvolvedora Full Stack', 'Tecnologia'),
   ('e4000000-0000-0000-0000-000000000004', 'f3000000-0000-0000-0000-000000000003', 'Carlos Oliveira',     'carlos@hyperolimpo.com.br',   'Analista Financeiro',   'Financeiro'),
@@ -266,7 +266,7 @@ on conflict do nothing;
 -- 3. Execute no SQL Editor:
 --    UPDATE public.usuarios
 --    SET user_id = 'UUID-COPIADO-AQUI'
---    WHERE email = 'rafael@hyperolimpo.com.br';
+--    WHERE email = 'rafaelg.bernardino@hotmail.com';
 --
 -- 4. O funcionário recebe o e-mail de convite, define a senha
 --    e já consegue acessar o painel em /painel.html.
