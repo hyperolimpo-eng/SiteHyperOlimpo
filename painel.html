@@ -1,0 +1,827 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Painel — HyperOlimpo</title>
+  <meta name="robots" content="noindex, nofollow" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="painel.css" />
+</head>
+<body>
+
+<!-- ── Greeting ─────────────────────────────────────────────────────────────── -->
+<div class="greeting-popup" id="greetingPopup">
+  <div class="greeting-emoji" id="greetingEmoji">☀️</div>
+  <div class="greeting-text" id="greetingText">Bom dia!</div>
+  <div class="greeting-sub">Bem-vindo ao Painel HyperOlimpo</div>
+</div>
+
+<!-- ── Layout ───────────────────────────────────────────────────────────────── -->
+<div class="painel-layout">
+
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <a href="index.html" class="sidebar-brand">
+      <img src="logo_HO2.png" alt="HyperOlimpo" />
+      <span>HyperOlimpo</span>
+    </a>
+
+    <nav class="sidebar-nav">
+      <span class="nav-section-label">Principal</span>
+      <button class="nav-item active" onclick="navigate('dashboard',null,this)">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+        Dashboard
+      </button>
+      <button class="nav-item" onclick="navigate('clientes',null,this)">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        Clientes
+      </button>
+
+      <span class="nav-section-label">Financeiro</span>
+      <button class="nav-item" onclick="navigate('financeiro','gastos',this)">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>
+        Gastos Operacionais
+      </button>
+      <button class="nav-item" onclick="navigate('financeiro','pagar',this)">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+        Contas a Pagar
+      </button>
+      <button class="nav-item" onclick="navigate('financeiro','receber',this)">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
+        Contas a Receber
+      </button>
+
+      <span class="nav-section-label">Administração</span>
+      <button class="nav-item" onclick="navigate('usuarios',null,this)">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        Usuários
+      </button>
+      <button class="nav-item" onclick="navigate('perfis',null,this)">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        Perfis
+      </button>
+    </nav>
+
+    <div class="sidebar-footer">
+      <div class="user-card">
+        <div class="user-avatar" id="sidebarAvatar">--</div>
+        <div class="user-info">
+          <div class="user-name" id="sidebarName">Carregando...</div>
+          <div class="user-role" id="sidebarRole">--</div>
+        </div>
+        <button class="btn-logout" onclick="logout()" title="Sair">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+        </button>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Main -->
+  <div class="main-content">
+    <header class="main-header">
+      <h1 id="pageTitle">Dashboard</h1>
+    </header>
+
+    <div class="main-body">
+
+      <!-- ── Dashboard ──────────────────────────────────────────────────────── -->
+      <section class="section active" id="sec-dashboard">
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-value" id="dashSolicitados">--</div>
+            <div class="stat-label">Projetos Solicitados</div>
+          </div>
+          <div class="stat-card accent">
+            <div class="stat-value" id="dashAndamento">--</div>
+            <div class="stat-label">Em Andamento</div>
+          </div>
+          <div class="stat-card success">
+            <div class="stat-value" id="dashFinalizados">--</div>
+            <div class="stat-label">Finalizados</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-value" id="dashClientes">--</div>
+            <div class="stat-label">Clientes Ativos</div>
+          </div>
+          <div class="stat-card warning">
+            <div class="stat-value" id="dashReceber">--</div>
+            <div class="stat-label">A Receber (R$)</div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header"><span class="card-title">Projetos Recentes</span></div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Projeto</th><th>Cliente</th><th>Status</th>
+                  <th>Prioridade</th><th>Previsão</th><th>Valor</th>
+                </tr>
+              </thead>
+              <tbody id="dashProjetos">
+                <tr class="loading-row"><td colspan="6">Carregando...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- ── Clientes ───────────────────────────────────────────────────────── -->
+      <section class="section" id="sec-clientes">
+        <div class="card">
+          <div class="card-header"><span class="card-title">Clientes Cadastrados</span></div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Nome / Empresa</th><th>Tipo</th><th>E-mail</th>
+                  <th>Celular</th><th>Cidade</th><th>Status</th>
+                </tr>
+              </thead>
+              <tbody id="clientesTable">
+                <tr class="loading-row"><td colspan="6">Carregando...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- ── Financeiro ─────────────────────────────────────────────────────── -->
+      <section class="section" id="sec-financeiro">
+        <div class="card">
+          <div class="tabs">
+            <button class="tab-btn active" id="tab-gastos"   onclick="showTab('gastos')">Gastos Operacionais</button>
+            <button class="tab-btn"        id="tab-pagar"    onclick="showTab('pagar')">Contas a Pagar</button>
+            <button class="tab-btn"        id="tab-receber"  onclick="showTab('receber')">Contas a Receber</button>
+          </div>
+
+          <!-- Gastos -->
+          <div class="tab-content active" id="tabcontent-gastos">
+            <div class="card-header" style="border-radius:0">
+              <span class="card-title">Gastos Operacionais</span>
+              <button class="btn btn-primary btn-sm" onclick="openModal('modalGasto')">+ Novo Gasto</button>
+            </div>
+            <div class="table-wrap">
+              <table>
+                <thead><tr><th>Descrição</th><th>Categoria</th><th>Valor</th><th>Data</th><th>Status</th></tr></thead>
+                <tbody id="gastosTable"><tr class="loading-row"><td colspan="5">Carregando...</td></tr></tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Contas a Pagar -->
+          <div class="tab-content" id="tabcontent-pagar">
+            <div class="card-header" style="border-radius:0">
+              <span class="card-title">Contas a Pagar</span>
+              <button class="btn btn-primary btn-sm" onclick="openModal('modalPagar')">+ Nova Conta</button>
+            </div>
+            <div class="table-wrap">
+              <table>
+                <thead><tr><th>Descrição</th><th>Fornecedor</th><th>Valor</th><th>Vencimento</th><th>Status</th></tr></thead>
+                <tbody id="pagarTable"><tr class="loading-row"><td colspan="5">Carregando...</td></tr></tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Contas a Receber -->
+          <div class="tab-content" id="tabcontent-receber">
+            <div class="card-header" style="border-radius:0">
+              <span class="card-title">Contas a Receber</span>
+              <button class="btn btn-primary btn-sm" onclick="openModal('modalReceber')">+ Nova Conta</button>
+            </div>
+            <div class="table-wrap">
+              <table>
+                <thead><tr><th>Descrição</th><th>Cliente</th><th>Valor</th><th>Vencimento</th><th>Status</th></tr></thead>
+                <tbody id="receberTable"><tr class="loading-row"><td colspan="5">Carregando...</td></tr></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ── Usuários ───────────────────────────────────────────────────────── -->
+      <section class="section" id="sec-usuarios">
+        <div class="card">
+          <div class="card-header">
+            <span class="card-title">Usuários do Sistema</span>
+            <button class="btn btn-primary btn-sm" onclick="openNovoUsuario()">+ Novo Usuário</button>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Nome</th><th>Cargo</th><th>Perfil</th><th>Departamento</th><th>E-mail</th><th>Status</th></tr></thead>
+              <tbody id="usuariosTable"><tr class="loading-row"><td colspan="6">Carregando...</td></tr></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- ── Perfis ─────────────────────────────────────────────────────────── -->
+      <section class="section" id="sec-perfis">
+        <div class="card">
+          <div class="card-header">
+            <span class="card-title">Perfis de Acesso</span>
+            <button class="btn btn-primary btn-sm" onclick="openModal('modalPerfil')">+ Novo Perfil</button>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Nome</th><th>Descrição</th><th>Usuários</th></tr></thead>
+              <tbody id="perfisTable"><tr class="loading-row"><td colspan="3">Carregando...</td></tr></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+    </div><!-- /main-body -->
+  </div><!-- /main-content -->
+</div><!-- /painel-layout -->
+
+
+<!-- ══════════════════════════════════ MODAIS ════════════════════════════════ -->
+
+<!-- Detalhe Cliente -->
+<div class="modal-overlay" id="modalClienteDetalhe">
+  <div class="modal modal-lg">
+    <div class="modal-header">
+      <span class="modal-title" id="modalClienteNome">Cliente</span>
+      <button class="modal-close" onclick="closeModal('modalClienteDetalhe')">✕</button>
+    </div>
+    <div class="modal-body" id="modalClienteBody"></div>
+  </div>
+</div>
+
+<!-- Detalhe Financeiro -->
+<div class="modal-overlay" id="modalFinDetalhe">
+  <div class="modal">
+    <div class="modal-header">
+      <span class="modal-title" id="modalFinTitulo">Detalhe</span>
+      <button class="modal-close" onclick="closeModal('modalFinDetalhe')">✕</button>
+    </div>
+    <div class="modal-body" id="modalFinBody"></div>
+  </div>
+</div>
+
+<!-- Novo Gasto -->
+<div class="modal-overlay" id="modalGasto">
+  <div class="modal">
+    <div class="modal-header">
+      <span class="modal-title">Novo Gasto Operacional</span>
+      <button class="modal-close" onclick="closeModal('modalGasto')">✕</button>
+    </div>
+    <form id="formGasto" onsubmit="saveGasto(event)">
+      <div class="modal-body">
+        <div class="form-grid">
+          <div class="form-field col-full"><label>Descrição *</label><input name="descricao" required placeholder="Descrição do gasto" /></div>
+          <div class="form-field">
+            <label>Categoria</label>
+            <select name="categoria">
+              <option value="">Selecione</option>
+              <option>Infraestrutura</option><option>Software / Licenças</option>
+              <option>Salários</option><option>Marketing</option>
+              <option>Serviços Terceiros</option><option>Equipamentos</option><option>Outros</option>
+            </select>
+          </div>
+          <div class="form-field"><label>Valor (R$) *</label><input name="valor" type="number" step="0.01" min="0" required placeholder="0,00" /></div>
+          <div class="form-field"><label>Data *</label><input name="data" type="date" required /></div>
+          <div class="form-field">
+            <label>Status</label>
+            <select name="status"><option value="pago">Pago</option><option value="pendente">Pendente</option><option value="cancelado">Cancelado</option></select>
+          </div>
+          <div class="form-field col-full"><label>Observações</label><textarea name="observacoes" placeholder="Observações opcionais"></textarea></div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-ghost" onclick="closeModal('modalGasto')">Cancelar</button>
+        <button type="submit" class="btn btn-primary">Salvar</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Nova Conta a Pagar -->
+<div class="modal-overlay" id="modalPagar">
+  <div class="modal">
+    <div class="modal-header">
+      <span class="modal-title">Nova Conta a Pagar</span>
+      <button class="modal-close" onclick="closeModal('modalPagar')">✕</button>
+    </div>
+    <form id="formPagar" onsubmit="savePagar(event)">
+      <div class="modal-body">
+        <div class="form-grid">
+          <div class="form-field col-full"><label>Descrição *</label><input name="descricao" required placeholder="Descrição da conta" /></div>
+          <div class="form-field"><label>Fornecedor</label><input name="fornecedor" placeholder="Nome do fornecedor" /></div>
+          <div class="form-field">
+            <label>Categoria</label>
+            <select name="categoria">
+              <option value="">Selecione</option>
+              <option>Aluguel</option><option>Energia</option><option>Internet</option>
+              <option>Software</option><option>Impostos</option><option>Fornecedor</option><option>Outros</option>
+            </select>
+          </div>
+          <div class="form-field"><label>Valor (R$) *</label><input name="valor" type="number" step="0.01" min="0" required placeholder="0,00" /></div>
+          <div class="form-field"><label>Vencimento *</label><input name="data_vencimento" type="date" required /></div>
+          <div class="form-field">
+            <label>Status</label>
+            <select name="status"><option value="pendente">Pendente</option><option value="pago">Pago</option><option value="vencido">Vencido</option><option value="cancelado">Cancelado</option></select>
+          </div>
+          <div class="form-field col-full"><label>Observações</label><textarea name="observacoes" placeholder="Observações opcionais"></textarea></div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-ghost" onclick="closeModal('modalPagar')">Cancelar</button>
+        <button type="submit" class="btn btn-primary">Salvar</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Nova Conta a Receber -->
+<div class="modal-overlay" id="modalReceber">
+  <div class="modal">
+    <div class="modal-header">
+      <span class="modal-title">Nova Conta a Receber</span>
+      <button class="modal-close" onclick="closeModal('modalReceber')">✕</button>
+    </div>
+    <form id="formReceber" onsubmit="saveReceber(event)">
+      <div class="modal-body">
+        <div class="form-grid">
+          <div class="form-field col-full"><label>Descrição *</label><input name="descricao" required placeholder="Ex: Parcela 1/3 — Projeto X" /></div>
+          <div class="form-field"><label>Valor (R$) *</label><input name="valor" type="number" step="0.01" min="0" required placeholder="0,00" /></div>
+          <div class="form-field"><label>Vencimento *</label><input name="data_vencimento" type="date" required /></div>
+          <div class="form-field">
+            <label>Status</label>
+            <select name="status"><option value="pendente">Pendente</option><option value="recebido">Recebido</option><option value="vencido">Vencido</option><option value="cancelado">Cancelado</option></select>
+          </div>
+          <div class="form-field col-full"><label>Observações</label><textarea name="observacoes" placeholder="Observações opcionais"></textarea></div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-ghost" onclick="closeModal('modalReceber')">Cancelar</button>
+        <button type="submit" class="btn btn-primary">Salvar</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Novo Usuário -->
+<div class="modal-overlay" id="modalUsuario">
+  <div class="modal">
+    <div class="modal-header">
+      <span class="modal-title">Novo Usuário</span>
+      <button class="modal-close" onclick="closeModal('modalUsuario')">✕</button>
+    </div>
+    <form id="formUsuario" onsubmit="saveUsuario(event)">
+      <div class="modal-body">
+        <div class="form-grid">
+          <div class="form-field col-full"><label>Nome Completo *</label><input name="nome_completo" required placeholder="Nome do funcionário" /></div>
+          <div class="form-field"><label>E-mail *</label><input name="email" type="email" required placeholder="email@hyperolimpo.com.br" /></div>
+          <div class="form-field"><label>Cargo</label><input name="cargo" placeholder="Ex: Desenvolvedor, Designer..." /></div>
+          <div class="form-field"><label>Departamento</label><input name="departamento" placeholder="Ex: Tecnologia, Comercial..." /></div>
+          <div class="form-field"><label>Telefone</label><input name="telefone" placeholder="(00) 00000-0000" /></div>
+          <div class="form-field">
+            <label>Perfil</label>
+            <select name="perfil_id" id="selectPerfilUsuario"><option value="">Selecione</option></select>
+          </div>
+          <div class="form-field">
+            <label>Status</label>
+            <select name="ativo"><option value="true">Ativo</option><option value="false">Inativo</option></select>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-ghost" onclick="closeModal('modalUsuario')">Cancelar</button>
+        <button type="submit" class="btn btn-primary">Salvar</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Novo Perfil -->
+<div class="modal-overlay" id="modalPerfil">
+  <div class="modal">
+    <div class="modal-header">
+      <span class="modal-title">Novo Perfil</span>
+      <button class="modal-close" onclick="closeModal('modalPerfil')">✕</button>
+    </div>
+    <form id="formPerfil" onsubmit="savePerfil(event)">
+      <div class="modal-body">
+        <div class="form-grid">
+          <div class="form-field col-full"><label>Nome do Perfil *</label><input name="nome" required placeholder="Ex: Administrador, Desenvolvedor..." /></div>
+          <div class="form-field col-full"><label>Descrição</label><textarea name="descricao" placeholder="Descreva as permissões e responsabilidades deste perfil"></textarea></div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-ghost" onclick="closeModal('modalPerfil')">Cancelar</button>
+        <button type="submit" class="btn btn-primary">Salvar</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════ SCRIPTS ════════════════════════════════ -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="supabase-config.js"></script>
+<script>
+
+// ── State ─────────────────────────────────────────────────────────────────────
+let currentUsuario = null;
+let clientesData   = [];
+let gastosData     = [];
+let pagarData      = [];
+let receberData    = [];
+let perfisData     = [];
+let clientesLoaded = false, gastosLoaded = false, pagarLoaded = false,
+    receberLoaded  = false, usuariosLoaded = false, perfisLoaded = false;
+
+// ── Init ──────────────────────────────────────────────────────────────────────
+async function initPanel() {
+  const { data: { session } } = await db.auth.getSession();
+  if (!session) { window.location.href = 'index.html'; return; }
+
+  const { data: usuario } = await db
+    .from('usuarios')
+    .select('*, perfis(nome)')
+    .eq('user_id', session.user.id)
+    .eq('ativo', true)
+    .single();
+
+  if (!usuario) { window.location.href = 'index.html'; return; }
+
+  currentUsuario = usuario;
+  const iniciais = usuario.nome_completo.split(' ').slice(0, 2).map(n => n[0]).join('').toUpperCase();
+  document.getElementById('sidebarAvatar').textContent = iniciais;
+  document.getElementById('sidebarName').textContent   = usuario.nome_completo;
+  document.getElementById('sidebarRole').textContent   = usuario.perfis?.nome || usuario.cargo || 'Funcionário';
+
+  showGreeting(usuario.nome_completo);
+  loadDashboard();
+  loadPerfis(); // carrega perfis cedo para popular o select do modal de usuário
+}
+
+// ── Greeting ──────────────────────────────────────────────────────────────────
+function showGreeting(nomeCompleto) {
+  const h = new Date().getHours();
+  const [saudacao, emoji] = h < 12 ? ['Bom dia', '☀️'] : h < 18 ? ['Boa tarde', '🌤️'] : ['Boa noite', '🌙'];
+  document.getElementById('greetingEmoji').textContent = emoji;
+  document.getElementById('greetingText').textContent  = `${saudacao}, ${nomeCompleto.split(' ')[0]}!`;
+  const popup = document.getElementById('greetingPopup');
+  popup.classList.add('show');
+  setTimeout(() => popup.classList.add('fade'), 3000);
+  setTimeout(() => { popup.style.display = 'none'; }, 4100);
+}
+
+// ── Navigation ────────────────────────────────────────────────────────────────
+const pageTitles = { dashboard:'Dashboard', clientes:'Clientes', financeiro:'Financeiro', usuarios:'Usuários', perfis:'Perfis de Acesso' };
+
+function navigate(section, subTab, btn) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.getElementById(`sec-${section}`).classList.add('active');
+  document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
+  if (btn) btn.classList.add('active');
+  document.getElementById('pageTitle').textContent = pageTitles[section] || section;
+
+  if (section === 'clientes'   && !clientesLoaded)  loadClientes();
+  if (section === 'financeiro') {
+    if (!gastosLoaded)  loadGastos();
+    if (!pagarLoaded)   loadPagar();
+    if (!receberLoaded) loadReceber();
+    if (subTab) showTab(subTab);
+  }
+  if (section === 'usuarios' && !usuariosLoaded) loadUsuarios();
+  if (section === 'perfis'   && !perfisLoaded)   loadPerfis();
+}
+
+function showTab(tab) {
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+  document.getElementById(`tab-${tab}`).classList.add('active');
+  document.getElementById(`tabcontent-${tab}`).classList.add('active');
+}
+
+// ── Helpers ───────────────────────────────────────────────────────────────────
+function fmtDate(d)  { if (!d) return '—'; const [y,m,dd] = d.split('-'); return `${dd}/${m}/${y}`; }
+function fmtMoney(v) { if (v === null || v === undefined) return '—'; return 'R$ ' + Number(v).toLocaleString('pt-BR', {minimumFractionDigits:2}); }
+
+function badge(key) {
+  const map = {
+    ativo:'blue', pendente:'yellow', inativo:'gray', bloqueado:'red',
+    solicitado:'blue', em_andamento:'blue', finalizado:'green', cancelado:'red', pausado:'gray',
+    pago:'green', vencido:'red', recebido:'green',
+    baixa:'gray', media:'yellow', alta:'red', urgente:'red',
+  };
+  const labels = {
+    ativo:'Ativo', pendente:'Pendente', inativo:'Inativo', bloqueado:'Bloqueado',
+    solicitado:'Solicitado', em_andamento:'Em Andamento', finalizado:'Finalizado',
+    cancelado:'Cancelado', pausado:'Pausado',
+    pago:'Pago', vencido:'Vencido', recebido:'Recebido',
+    baixa:'Baixa', media:'Média', alta:'Alta', urgente:'Urgente',
+  };
+  const k = String(key).toLowerCase();
+  const cls = { blue:'badge-blue', green:'badge-green', yellow:'badge-yellow', red:'badge-red', gray:'badge-gray' };
+  return `<span class="badge ${cls[map[k]] || 'badge-gray'}">${labels[k] || key}</span>`;
+}
+
+function avatarEl(nome) {
+  const ini = nome.split(' ').slice(0, 2).map(n => n[0]).join('').toUpperCase();
+  return `<div class="avatar-inline">${ini}</div>`;
+}
+
+function openModal(id)  { document.getElementById(id).classList.add('open'); }
+function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+
+document.querySelectorAll('.modal-overlay').forEach(o =>
+  o.addEventListener('click', e => { if (e.target === o) o.classList.remove('open'); })
+);
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') document.querySelectorAll('.modal-overlay.open').forEach(m => m.classList.remove('open'));
+});
+
+// ── Dashboard ─────────────────────────────────────────────────────────────────
+async function loadDashboard() {
+  const [sol, and, fin, cli, rec, proj] = await Promise.all([
+    db.from('projetos').select('*', {count:'exact', head:true}).eq('status','solicitado'),
+    db.from('projetos').select('*', {count:'exact', head:true}).eq('status','em_andamento'),
+    db.from('projetos').select('*', {count:'exact', head:true}).eq('status','finalizado'),
+    db.from('clientes').select('*', {count:'exact', head:true}).eq('status','ativo'),
+    db.from('financeiro_contas_receber').select('valor').eq('status','pendente'),
+    db.from('projetos').select('id, nome, status, prioridade, data_previsao, valor, clientes(nome_completo, razao_social)')
+      .order('criado_em', {ascending:false}).limit(8),
+  ]);
+
+  document.getElementById('dashSolicitados').textContent = sol.count ?? '--';
+  document.getElementById('dashAndamento').textContent   = and.count ?? '--';
+  document.getElementById('dashFinalizados').textContent = fin.count ?? '--';
+  document.getElementById('dashClientes').textContent    = cli.count ?? '--';
+
+  const totalRec = (rec.data || []).reduce((s, r) => s + Number(r.valor), 0);
+  document.getElementById('dashReceber').textContent = totalRec.toLocaleString('pt-BR', {minimumFractionDigits:2});
+
+  const rows = proj.data || [];
+  const tbody = document.getElementById('dashProjetos');
+  if (!rows.length) { tbody.innerHTML = `<tr class="empty-row"><td colspan="6">Nenhum projeto cadastrado.</td></tr>`; return; }
+  tbody.innerHTML = rows.map(p => `
+    <tr>
+      <td><strong>${p.nome}</strong></td>
+      <td>${p.clientes?.razao_social || p.clientes?.nome_completo || '—'}</td>
+      <td>${badge(p.status)}</td>
+      <td>${badge(p.prioridade)}</td>
+      <td>${fmtDate(p.data_previsao)}</td>
+      <td>${fmtMoney(p.valor)}</td>
+    </tr>
+  `).join('');
+}
+
+// ── Clientes ──────────────────────────────────────────────────────────────────
+async function loadClientes() {
+  clientesLoaded = true;
+  const { data, error } = await db.from('clientes').select('*').order('criado_em', {ascending:false});
+  if (error) { console.error(error); return; }
+  clientesData = data || [];
+  const tbody = document.getElementById('clientesTable');
+  if (!clientesData.length) { tbody.innerHTML = `<tr class="empty-row"><td colspan="6">Nenhum cliente cadastrado.</td></tr>`; return; }
+  tbody.innerHTML = clientesData.map(c => `
+    <tr class="clickable" onclick="openClienteDetalhe('${c.id}')">
+      <td><strong>${c.tipo_pessoa === 'PJ' ? (c.razao_social || c.nome_completo) : c.nome_completo}</strong></td>
+      <td>${c.tipo_pessoa}</td>
+      <td>${c.email}</td>
+      <td>${c.celular || '—'}</td>
+      <td>${c.cidade || '—'}${c.estado_uf ? ' / ' + c.estado_uf : ''}</td>
+      <td>${badge(c.status)}</td>
+    </tr>
+  `).join('');
+}
+
+async function openClienteDetalhe(id) {
+  const c = clientesData.find(x => x.id === id);
+  if (!c) return;
+
+  const { data: servicos } = await db.from('cliente_servicos').select('*').eq('cliente_id', id).order('data_inicio', {ascending:false});
+  const { data: projetos  } = await db.from('projetos').select('id, nome, status, prioridade, data_previsao, valor').eq('cliente_id', id);
+
+  const nome = c.tipo_pessoa === 'PJ' ? (c.razao_social || c.nome_completo) : c.nome_completo;
+  document.getElementById('modalClienteNome').textContent = nome;
+
+  const row = (label, val) => val ? `<div class="detail-item"><label>${label}</label><p>${val}</p></div>` : '';
+
+  document.getElementById('modalClienteBody').innerHTML = `
+    <div class="detail-grid">
+      ${row('Tipo', c.tipo_pessoa === 'PJ' ? 'Pessoa Jurídica' : 'Pessoa Física')}
+      <div class="detail-item"><label>Status</label><p>${badge(c.status)}</p></div>
+      ${row('Responsável', c.nome_completo)}
+      ${row('CNPJ', c.cnpj)} ${row('CPF', c.cpf)}
+      ${row('E-mail', c.email)} ${row('Celular', c.celular)} ${row('Fixo', c.telefone_fixo)}
+      ${row('Cidade', c.cidade ? c.cidade + (c.estado_uf ? ' / ' + c.estado_uf : '') : null)}
+      ${row('CEP', c.cep)}
+      ${c.logradouro ? `<div class="detail-item col-full"><label>Endereço</label><p>${c.logradouro}, ${c.numero || 's/n'}${c.complemento ? ' – ' + c.complemento : ''} – ${c.bairro || ''}</p></div>` : ''}
+      ${row('Origem', c.origem)} ${row('Orçamento', c.orcamento)}
+      ${c.descricao ? `<div class="detail-item col-full"><label>Projeto / Necessidade</label><p>${c.descricao}</p></div>` : ''}
+    </div>
+
+    ${projetos && projetos.length ? `
+    <div class="section-divider">Projetos</div>
+    <table>
+      <thead><tr><th>Nome</th><th>Status</th><th>Prioridade</th><th>Previsão</th><th>Valor</th></tr></thead>
+      <tbody>
+        ${projetos.map(p => `<tr><td><strong>${p.nome}</strong></td><td>${badge(p.status)}</td><td>${badge(p.prioridade)}</td><td>${fmtDate(p.data_previsao)}</td><td>${fmtMoney(p.valor)}</td></tr>`).join('')}
+      </tbody>
+    </table>` : ''}
+
+    <div class="section-divider">Serviços Contratados</div>
+    ${servicos && servicos.length ? `
+    <table>
+      <thead><tr><th>Serviço</th><th>Descrição</th><th>Valor Mensal</th><th>Início</th><th>Status</th></tr></thead>
+      <tbody>
+        ${servicos.map(s => `<tr><td><strong>${s.nome_servico}</strong></td><td>${s.descricao || '—'}</td><td>${fmtMoney(s.valor_mensal)}</td><td>${fmtDate(s.data_inicio)}</td><td>${badge(s.status)}</td></tr>`).join('')}
+      </tbody>
+    </table>` : '<p style="color:var(--muted);font-size:0.8rem;margin-top:0.5rem">Nenhum serviço contratado.</p>'}
+  `;
+
+  openModal('modalClienteDetalhe');
+}
+
+// ── Financeiro ────────────────────────────────────────────────────────────────
+async function loadGastos() {
+  gastosLoaded = true;
+  const { data } = await db.from('financeiro_gastos').select('*').order('data', {ascending:false});
+  gastosData = data || [];
+  const tbody = document.getElementById('gastosTable');
+  if (!gastosData.length) { tbody.innerHTML = `<tr class="empty-row"><td colspan="5">Nenhum gasto cadastrado.</td></tr>`; return; }
+  tbody.innerHTML = gastosData.map(r => `
+    <tr class="clickable" onclick="openFinDetalhe('gasto','${r.id}')">
+      <td><strong>${r.descricao}</strong></td>
+      <td>${r.categoria || '—'}</td>
+      <td>${fmtMoney(r.valor)}</td>
+      <td>${fmtDate(r.data)}</td>
+      <td>${badge(r.status)}</td>
+    </tr>
+  `).join('');
+}
+
+async function loadPagar() {
+  pagarLoaded = true;
+  const { data } = await db.from('financeiro_contas_pagar').select('*').order('data_vencimento', {ascending:true});
+  pagarData = data || [];
+  const tbody = document.getElementById('pagarTable');
+  if (!pagarData.length) { tbody.innerHTML = `<tr class="empty-row"><td colspan="5">Nenhuma conta cadastrada.</td></tr>`; return; }
+  tbody.innerHTML = pagarData.map(r => `
+    <tr class="clickable" onclick="openFinDetalhe('pagar','${r.id}')">
+      <td><strong>${r.descricao}</strong></td>
+      <td>${r.fornecedor || '—'}</td>
+      <td>${fmtMoney(r.valor)}</td>
+      <td>${fmtDate(r.data_vencimento)}</td>
+      <td>${badge(r.status)}</td>
+    </tr>
+  `).join('');
+}
+
+async function loadReceber() {
+  receberLoaded = true;
+  const { data } = await db.from('financeiro_contas_receber')
+    .select('*, clientes(nome_completo, razao_social)')
+    .order('data_vencimento', {ascending:true});
+  receberData = data || [];
+  const tbody = document.getElementById('receberTable');
+  if (!receberData.length) { tbody.innerHTML = `<tr class="empty-row"><td colspan="5">Nenhuma conta cadastrada.</td></tr>`; return; }
+  tbody.innerHTML = receberData.map(r => `
+    <tr class="clickable" onclick="openFinDetalhe('receber','${r.id}')">
+      <td><strong>${r.descricao}</strong></td>
+      <td>${r.clientes?.razao_social || r.clientes?.nome_completo || '—'}</td>
+      <td>${fmtMoney(r.valor)}</td>
+      <td>${fmtDate(r.data_vencimento)}</td>
+      <td>${badge(r.status)}</td>
+    </tr>
+  `).join('');
+}
+
+function openFinDetalhe(tipo, id) {
+  const stores = { gasto: gastosData, pagar: pagarData, receber: receberData };
+  const r = stores[tipo]?.find(x => x.id === id);
+  if (!r) return;
+
+  const configs = {
+    gasto:   { titulo:'Detalhe do Gasto',  campos:[['Descrição','descricao'],['Categoria','categoria'],['Valor','valor'],['Data','data'],['Status','status'],['Observações','observacoes']] },
+    pagar:   { titulo:'Conta a Pagar',     campos:[['Descrição','descricao'],['Fornecedor','fornecedor'],['Categoria','categoria'],['Valor','valor'],['Vencimento','data_vencimento'],['Pagamento','data_pagamento'],['Status','status'],['Observações','observacoes']] },
+    receber: { titulo:'Conta a Receber',   campos:[['Descrição','descricao'],['Valor','valor'],['Vencimento','data_vencimento'],['Recebimento','data_recebimento'],['Status','status'],['Observações','observacoes']] },
+  };
+  const cfg = configs[tipo];
+  document.getElementById('modalFinTitulo').textContent = cfg.titulo;
+
+  document.getElementById('modalFinBody').innerHTML = `
+    <div class="detail-grid">
+      ${cfg.campos.filter(([,k]) => r[k] != null && r[k] !== '').map(([label, k]) => {
+        let val = r[k];
+        if (k === 'valor')  val = fmtMoney(val);
+        else if (k.startsWith('data')) val = fmtDate(val);
+        else if (k === 'status') val = badge(val);
+        return `<div class="detail-item"><label>${label}</label><p>${val}</p></div>`;
+      }).join('')}
+    </div>
+  `;
+  openModal('modalFinDetalhe');
+}
+
+async function saveGasto(e) {
+  e.preventDefault();
+  const payload = Object.fromEntries(new FormData(e.target));
+  const { error } = await db.from('financeiro_gastos').insert(payload);
+  if (error) { alert('Erro: ' + error.message); return; }
+  closeModal('modalGasto'); e.target.reset(); gastosLoaded = false; loadGastos();
+}
+
+async function savePagar(e) {
+  e.preventDefault();
+  const { error } = await db.from('financeiro_contas_pagar').insert(Object.fromEntries(new FormData(e.target)));
+  if (error) { alert('Erro: ' + error.message); return; }
+  closeModal('modalPagar'); e.target.reset(); pagarLoaded = false; loadPagar();
+}
+
+async function saveReceber(e) {
+  e.preventDefault();
+  const { error } = await db.from('financeiro_contas_receber').insert(Object.fromEntries(new FormData(e.target)));
+  if (error) { alert('Erro: ' + error.message); return; }
+  closeModal('modalReceber'); e.target.reset(); receberLoaded = false; loadReceber();
+}
+
+// ── Usuários ──────────────────────────────────────────────────────────────────
+async function loadUsuarios() {
+  usuariosLoaded = true;
+  const { data } = await db.from('usuarios').select('*, perfis(nome)').order('nome_completo');
+  const rows = data || [];
+  const tbody = document.getElementById('usuariosTable');
+  if (!rows.length) { tbody.innerHTML = `<tr class="empty-row"><td colspan="6">Nenhum usuário cadastrado.</td></tr>`; return; }
+  tbody.innerHTML = rows.map(u => `
+    <tr>
+      <td>
+        <div class="cell-user">
+          ${avatarEl(u.nome_completo)}
+          <strong>${u.nome_completo}</strong>
+        </div>
+      </td>
+      <td>${u.cargo || '—'}</td>
+      <td>${u.perfis?.nome || '—'}</td>
+      <td>${u.departamento || '—'}</td>
+      <td>${u.email}</td>
+      <td>${badge(u.ativo ? 'ativo' : 'inativo')}</td>
+    </tr>
+  `).join('');
+}
+
+function openNovoUsuario() {
+  if (!perfisLoaded) loadPerfis().then(() => openModal('modalUsuario'));
+  else openModal('modalUsuario');
+}
+
+async function saveUsuario(e) {
+  e.preventDefault();
+  const payload = Object.fromEntries(new FormData(e.target));
+  payload.ativo = payload.ativo === 'true';
+  if (!payload.perfil_id) delete payload.perfil_id;
+  const { error } = await db.from('usuarios').insert(payload);
+  if (error) { alert('Erro: ' + error.message); return; }
+  closeModal('modalUsuario'); e.target.reset(); usuariosLoaded = false; loadUsuarios();
+}
+
+// ── Perfis ────────────────────────────────────────────────────────────────────
+async function loadPerfis() {
+  perfisLoaded = true;
+  const { data } = await db.from('perfis').select('*, usuarios(id)').order('nome');
+  perfisData = data || [];
+
+  // Popula select no modal de usuário
+  const sel = document.getElementById('selectPerfilUsuario');
+  sel.innerHTML = '<option value="">Selecione</option>' +
+    perfisData.map(p => `<option value="${p.id}">${p.nome}</option>`).join('');
+
+  const tbody = document.getElementById('perfisTable');
+  if (!perfisData.length) { tbody.innerHTML = `<tr class="empty-row"><td colspan="3">Nenhum perfil cadastrado.</td></tr>`; return; }
+  tbody.innerHTML = perfisData.map(p => `
+    <tr>
+      <td><strong>${p.nome}</strong></td>
+      <td>${p.descricao || '—'}</td>
+      <td>${Array.isArray(p.usuarios) ? p.usuarios.length : 0} usuário(s)</td>
+    </tr>
+  `).join('');
+}
+
+async function savePerfil(e) {
+  e.preventDefault();
+  const { error } = await db.from('perfis').insert(Object.fromEntries(new FormData(e.target)));
+  if (error) { alert('Erro: ' + error.message); return; }
+  closeModal('modalPerfil'); e.target.reset(); perfisLoaded = false; loadPerfis();
+}
+
+// ── Logout ────────────────────────────────────────────────────────────────────
+async function logout() {
+  await db.auth.signOut();
+  window.location.href = 'index.html';
+}
+
+// ── Start ─────────────────────────────────────────────────────────────────────
+initPanel();
+</script>
+</body>
+</html>
