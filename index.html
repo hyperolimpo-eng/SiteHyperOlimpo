@@ -745,14 +745,23 @@
         if (!email || !pass) { setAlert('loginAlert', 'Preencha e-mail e senha.', true); return; }
         setLoading('loginBtn', 'loginBtnText', true);
 
-        const { error } = await db.auth.signInWithPassword({ email, password: pass });
+        const { data: authData, error } = await db.auth.signInWithPassword({ email, password: pass });
         setLoading('loginBtn', 'loginBtnText', false, 'Entrar');
         if (error) {
           setAlert('loginAlert', 'E-mail ou senha incorretos. Verifique suas credenciais.', true);
         } else {
-          closeModal();
-          // TODO: redirecionar para painel do cliente quando a página existir
-          // window.location.href = '/painel-cliente.html';
+          const { data: usuario } = await db
+            .from('usuarios')
+            .select('id')
+            .eq('user_id', authData.user.id)
+            .eq('ativo', true)
+            .single();
+          if (usuario) {
+            window.location.href = 'painel.html';
+          } else {
+            closeModal();
+            // área do cliente (futuramente)
+          }
         }
       });
 
